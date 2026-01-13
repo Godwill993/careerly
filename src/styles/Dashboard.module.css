@@ -1,0 +1,115 @@
+.dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 0.6rem 1rem;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
+  width: 100%;
+  max-width: 400px;
+  gap: 0.8rem;
+}
+
+.searchBar input { border: none; outline: none; width: 100%; }
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.statCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.statIcon { font-size: 2rem; }
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.internshipGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.internCard {
+  background: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  position: relative;
+}
+
+.imagePlaceholder { position: relative; height: 150px; background: #eee; }
+.imagePlaceholder img { width: 100%; height: 100%; object-fit: cover; }
+
+.bookmarkBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.cardBody { padding: 1.2rem; }
+.tag { font-size: 0.7rem; background: #eff6ff; color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold; }
+
+.rankCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
+  margin-bottom: 1.5rem;
+}
+
+.rankItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* Skeleton Loading Animation */
+.skeleton { pointer-events: none; }
+.skeletonImage { height: 150px; background: #e5e7eb; animation: pulse 1.5s infinite; }
+.skeletonText { height: 15px; background: #e5e7eb; margin: 15px; border-radius: 4px; animation: pulse 1.5s infinite; }
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+@media (max-width: 1024px) {
+  .mainGrid { grid-template-columns: 1fr; }
+}

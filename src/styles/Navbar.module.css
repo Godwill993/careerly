@@ -1,0 +1,141 @@
+.navbar {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.menuButton {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color var(--transition-fast);
+}
+
+.menuButton:hover {
+  color: var(--color-primary);
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f3f4f6;
+  padding: 0.6rem 1rem;
+  border-radius: var(--border-radius);
+  width: 300px;
+  gap: 0.75rem;
+}
+
+.searchIcon {
+  color: var(--color-text-muted);
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.iconBadge {
+  position: relative;
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+}
+
+.dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444; /* Alert Red */
+  border: 2px solid white;
+  border-radius: 50%;
+}
+
+.profileSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--color-border);
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.userName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.userRole {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.profileAvatar {
+  font-size: 2rem;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+/* ... (Append to existing Navbar.module.css) ... */
+
+.logoutBtn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  margin-left: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.logoutBtn:hover {
+  background: #fff1f1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .searchWrapper {
+    display: none; /* Hide search on mobile to save space */
+  }
+  .userInfo {
+    display: none;
+  }
+}

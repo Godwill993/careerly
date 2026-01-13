@@ -1,0 +1,90 @@
+/* 1. CSS Variables - Change these to update the entire theme */
+:root {
+  /* Colors */
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
+  --color-text-muted: #666666;
+  
+  --color-primary: #2563eb;      /* Blue Accent */
+  --color-primary-hover: #1d4ed8;
+  
+  --color-secondary: #facc15;    /* Yellow Accent */
+  --color-secondary-hover: #eab308;
+
+  --color-border: #e5e7eb;
+
+  /* Typography */
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-size-base: 16px;
+
+  /* Transitions & Misc */
+  --transition-fast: 0.2s ease-in-out;
+  --transition-standard: 0.3s ease;
+  --border-radius: 8px;
+}
+
+/* 2. Reset & Global Defaults */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth; /* Smooth scroll behavior */
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 3. Reusable Utility Classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  transition: var(--transition-fast);
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+.text-accent { color: var(--color-primary); }
+.mt-1 { margin-top: 1rem; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+
+/* Default transitions for common elements */
+a, button, input {
+  transition: var(--transition-fast);
+}

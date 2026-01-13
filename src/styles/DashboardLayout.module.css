@@ -1,0 +1,34 @@
+.layoutContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f9fafb; /* Slightly off-white for content area contrast */
+  overflow: hidden;
+}
+
+.mainWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto; /* Allows main content to scroll while Sidebar stays fixed */
+  transition: all var(--transition-standard);
+}
+
+.contentArea {
+  flex: 1;
+  padding: 2rem;
+  /* Smooth scroll behavior inherited from global index.css */
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .contentArea {
+    padding: 1rem;
+  }
+}

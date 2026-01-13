@@ -1,0 +1,29 @@
+/* ... (Keep existing styles) ... */
+
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  border-radius: var(--border-radius);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none; /* Crucial for NavLink */
+  margin-bottom: 0.25rem;
+}
+
+.active {
+  background-color: #f0f4ff;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.active .icon {
+  color: var(--color-primary);
+}
+
+.logout:hover {
+  background-color: #fff1f1;
+  color: #ef4444;
+}
+/* ... (Keep rest of file) ... */
