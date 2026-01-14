@@ -82,7 +82,7 @@ const CandidateCard = () => (
     <div className={styles.candidateInfo}>
       <div className={styles.avatar}>JD</div>
       <div>
-        <h4>Jane Doe</h4>
+        <h4>lenz</h4>
         <p>Computer Science • Year 3</p>
       </div>
     </div>

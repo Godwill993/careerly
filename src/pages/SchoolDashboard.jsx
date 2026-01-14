@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaUserGraduation, FaTrophy, FaBuilding, FaBook, FaPlus, FaSearch } from 'react-icons/fa';
+import { FaApple, FaTrophy, FaBuilding, FaBook, FaPlus, FaSearch } from 'react-icons/fa';
 import styles from '../styles/SchoolDashboard.module.css';
 
 const SchoolDashboard = () => {
@@ -13,7 +13,7 @@ const SchoolDashboard = () => {
   }, []);
 
   const stats = [
-    { label: 'Total Students', value: '1,240', icon: <FaUserGraduation />, color: 'var(--color-primary)' },
+    { label: 'Total Students', value: '1,240', icon: <FaApple />, color: 'var(--color-primary)' },
     { label: 'Active Courses', value: '42', icon: <FaBook />, color: 'var(--color-secondary)' },
     { label: 'Partner Companies', value: '18', icon: <FaBuilding />, color: '#10b981' },
   ];

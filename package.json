@@ -10,21 +10,22 @@
     "preview": "vite preview"
   },
   "eslintConfig": {
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended"
-  ],
-  "plugins": ["react"],
-  "rules": {
-    "react/jsx-uses-vars": "error"
-  },
-  "settings": {
-    "react": {
-      "version": "detect"
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "plugins": [
+      "react"
+    ],
+    "rules": {
+      "react/jsx-uses-vars": "error"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
     }
-  }
-},
-
+  },
   "dependencies": {
     "firebase": "^12.7.0",
     "framer-motion": "^12.25.0",

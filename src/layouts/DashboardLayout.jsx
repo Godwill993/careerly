@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { Outlet } from 'react-router-dom'; // 1. Add this import
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import styles from '../styles/DashboardLayout.module.css';
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = () => { // 2. Remove ({ children })
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -12,16 +13,15 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div className={styles.layoutContainer}>
-      {/* Sidebar remains fixed or relative based on CSS */}
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
+      
       <div className={styles.mainWrapper}>
         <Navbar toggleSidebar={toggleSidebar} />
         
         <main className={styles.contentArea}>
-          {/* This is where your pages will be rendered */}
           <div className={styles.container}>
-            {children}
+            {/* 3. Replace {children} with <Outlet /> */}
+            <Outlet /> 
           </div>
         </main>
       </div>

@@ -1,0 +1,107 @@
+.container {
+  height: calc(100vh - 120px);
+  display: flex;
+  justify-content: center;
+}
+
+.chatWindow {
+  width: 100%;
+  max-width: 800px;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.header {
+  padding: 1.5rem;
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.botIcon { font-size: 2rem; }
+
+.messageArea {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: #f8fafc;
+}
+
+.aiMsg, .userMsg {
+  max-width: 80%;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.aiMsg {
+  align-self: flex-start;
+  background: white;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-bottom-left-radius: 2px;
+}
+
+.userMsg {
+  align-self: flex-end;
+  background: var(--color-primary);
+  color: white;
+  border-bottom-right-radius: 2px;
+}
+
+.footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.quickActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.quickActions button {
+  padding: 0.5rem 1rem;
+  background: #f1f5f9;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.quickActions button:hover { background: #e2e8f0; }
+
+.inputWrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+.inputWrapper input {
+  flex: 1;
+  padding: 0.8rem 1.2rem;
+  border: 1px solid var(--color-border);
+  border-radius: 25px;
+  outline: none;
+}
+
+.sendBtn {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+}

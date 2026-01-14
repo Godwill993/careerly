@@ -33,6 +33,7 @@ const Register = () => {
           <option value="student">Student</option>
           <option value="school">School</option>
           <option value="company">Company</option>
+          
         </select>
         
         <button type="submit" className="btn btn-primary">Register</button>
