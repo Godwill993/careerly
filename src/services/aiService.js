@@ -1,13 +1,19 @@
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { app } from "../firebase/config";
 
-const functions = getFunctions(app);
+// Force the region to match your console log (us-central1)
+const functions = getFunctions(app, "us-central1");
 
 export const aiService = {
-  getRecommendations: async (studentData) => {
-    // This calls the "recommendInternships" function you will deploy to Firebase
-    const recommendFn = httpsCallable(functions, "recommendInternships");
-    const result = await recommendFn(studentData);
-    return result.data; // This will be the AI's response
-  }
+  generateResponse: async (userInput) => {
+    try {
+      const careerAssistant = httpsCallable(functions, "careerAssistant");
+      const result = await careerAssistant(userInput);
+      return result.data;
+    } catch (error) {
+      console.error("Genkit Error:", error);
+      // Detailed error logging to help you see if it's a permission issue
+      return "I'm having trouble connecting. Check your internet or Firebase console.";
+    }
+  },
 };

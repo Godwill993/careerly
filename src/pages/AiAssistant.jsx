@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react'; // Added useRef, useEffect
 import { motion } from 'framer-motion';
 import { FaRobot, FaPaperPlane, FaLightbulb, FaChartLine } from 'react-icons/fa';
 import { aiService } from '../services/aiService';
@@ -10,18 +10,37 @@ const AiAssistant = () => {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  
+  // Reference to the bottom of the chat for auto-scrolling
+  const scrollRef = useRef(null);
+
+  // Auto-scroll whenever messages change
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isTyping]);
 
   const handleSend = async (text = input) => {
-    if (!text.trim()) return;
+    // Prevent empty sends OR multiple sends while waiting
+    if (!text.trim() || isTyping) return;
     
-    const newMessages = [...messages, { role: 'user', content: text }];
-    setMessages(newMessages);
+    const userMsg = { role: 'user', content: text };
+    
+    // 1. Use functional update to avoid race conditions
+    setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
 
-    const aiRes = await aiService.generateResponse(text);
-    setMessages([...newMessages, { role: 'ai', content: aiRes }]);
-    setIsTyping(false);
+    try {
+      const aiRes = await aiService.generateResponse(text);
+      // 2. Add AI response to the list
+      setMessages(prev => [...prev, { role: 'ai', content: aiRes }]);
+    } catch (error) {
+      setMessages(prev => [...prev, { role: 'ai', content: "I encountered an error. Please check your connection." }]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const quickActions = [
@@ -51,13 +70,23 @@ const AiAssistant = () => {
               {msg.content}
             </motion.div>
           ))}
-          {isTyping && <div className={styles.typing}>AI is thinking...</div>}
+          {isTyping && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={styles.typing}>
+              AI is thinking...
+            </motion.div>
+          )}
+          {/* Hidden element to scroll into view */}
+          <div ref={scrollRef} />
         </div>
 
         <div className={styles.footer}>
           <div className={styles.quickActions}>
             {quickActions.map((action, i) => (
-              <button key={i} onClick={() => handleSend(action.prompt)}>
+              <button 
+                key={i} 
+                onClick={() => handleSend(action.prompt)}
+                disabled={isTyping} // Disable during thinking
+              >
                 {action.icon} {action.label}
               </button>
             ))}
@@ -68,8 +97,13 @@ const AiAssistant = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Ask me anything about your career..." 
+              disabled={isTyping} // Disable input while AI thinks
             />
-            <button onClick={() => handleSend()} className={styles.sendBtn}>
+            <button 
+              onClick={() => handleSend()} 
+              className={styles.sendBtn}
+              disabled={isTyping || !input.trim()} // Visual feedback for empty input
+            >
               <FaPaperPlane />
             </button>
           </div>

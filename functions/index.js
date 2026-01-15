@@ -1,32 +1,32 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import { onCallGenkit } from "firebase-functions/https";
+import { defineSecret } from "firebase-functions/params";
+import { genkit, z } from "genkit";
+import { googleAI, gemini15Flash } from "@genkit-ai/googleai";
 
-const {setGlobalOptions} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/https");
-const logger = require("firebase-functions/logger");
+const apiKey = defineSecret("GOOGLE_GENAI_API_KEY");
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+const ai = genkit({
+  plugins: [googleAI()],
+  model: gemini15Flash,
+});
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
-
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+export const careerAssistant = onCallGenkit(
+  { 
+    secrets: [apiKey],
+    cors: true,       // FIXED: Resolves the CORS policy block in your console
+    invoker: 'public' // FIXED: Allows your frontend to call the function
+  },
+  ai.defineFlow(
+    {
+      name: "careerAssistant",
+      inputSchema: z.string(),
+      outputSchema: z.string(),
+    },
+    async (userInput) => {
+      const response = await ai.generate({
+        prompt: `You are a career mentor for the BlueGold app. Help this student: ${userInput}`,
+      });
+      return response.text();
+    }
+  )
+);

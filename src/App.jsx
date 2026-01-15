@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import StudentDashboard from './pages/StudentDashboard';
 import SchoolDashboard from './pages/SchoolDashboard';
+import AiAssistant from './pages/AiAssistant';
 
 // Placeholder for missing pages
 const Placeholder = ({ name }) => (
@@ -48,7 +49,7 @@ function AppContent() {
           {/* Shared Pages among all logged-in users */}
           <Route path="/profile" element={<Placeholder name="Profile" />} />
           <Route path="/settings" element={<Placeholder name="Settings" />} />
-          <Route path="/ai-assistant" element={<Placeholder name="AI Assistant" />} />
+          <Route path="/ai-assistant" element={<AiAssistant />} />
           <Route path="/rankings" element={<Placeholder name="Rankings" />} />
           <Route path="/internships" element={<Placeholder name="Internships" />} />
 

@@ -1,15 +1,13 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom'; // 1. Add this import
+import { Outlet } from 'react-router-dom'; // FIXED: Required for nested routes
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import styles from '../styles/DashboardLayout.module.css';
 
-const DashboardLayout = () => { // 2. Remove ({ children })
+const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
     <div className={styles.layoutContainer}>
@@ -20,7 +18,7 @@ const DashboardLayout = () => { // 2. Remove ({ children })
         
         <main className={styles.contentArea}>
           <div className={styles.container}>
-            {/* 3. Replace {children} with <Outlet /> */}
+            {/* FIXED: Replaced {children} with <Outlet /> to show sub-pages */}
             <Outlet /> 
           </div>
         </main>
