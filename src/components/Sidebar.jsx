@@ -31,7 +31,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         <AnimatePresence>
           {isOpen && (
             <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={styles.logoText}>
-              Careerly
+              <div className> Careerly</div>
             </motion.span>
           )}
         </AnimatePresence>

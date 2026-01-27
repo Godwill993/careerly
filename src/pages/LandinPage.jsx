@@ -470,7 +470,7 @@ const LandingPage = () => {
                 className="btn-primary"
               >
                 Get Started Now <ArrowRight size={20} className="btn-icon" />
-              </motion.button>
+              </motion.button>  
               </Link>
               <button className="btn-secondary">Watch Demo</button>
             </div>
