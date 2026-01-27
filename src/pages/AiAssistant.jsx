@@ -54,7 +54,7 @@ const AiAssistant = () => {
         <div className={styles.header}>
           <FaRobot className={styles.botIcon} />
           <div>
-            <h3>BlueGold AI</h3>
+            <h3>Careely AI</h3>
             <span>Online | Career Expert</span>
           </div>
         </div>

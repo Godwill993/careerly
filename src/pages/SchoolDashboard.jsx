@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaApple, FaTrophy, FaBuilding, FaBook, FaPlus, FaSearch } from 'react-icons/fa';
 import styles from '../styles/SchoolDashboard.module.css';
+import "../styles/index.css";
 
 const SchoolDashboard = () => {
   const [activeTab, setActiveTab] = useState('students');

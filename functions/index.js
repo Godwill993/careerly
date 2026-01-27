@@ -1,21 +1,16 @@
 import { onCallGenkit } from "firebase-functions/https";
-import { defineSecret } from "firebase-functions/params";
 import { genkit, z } from "genkit";
 import { googleAI, gemini15Flash } from "@genkit-ai/googleai";
 
-const apiKey = defineSecret("GOOGLE_GENAI_API_KEY");
-
+// For local testing, you can use a hardcoded key or a .env file
+// but onCallGenkit expects the flow to be defined.
 const ai = genkit({
-  plugins: [googleAI()],
+  plugins: [googleAI({ apiKey: "YOUR_GEMINI_API_KEY" })], 
   model: gemini15Flash,
 });
 
 export const careerAssistant = onCallGenkit(
-  { 
-    secrets: [apiKey],
-    cors: true,       // FIXED: Resolves the CORS policy block in your console
-    invoker: 'public' // FIXED: Allows your frontend to call the function
-  },
+  { cors: true }, 
   ai.defineFlow(
     {
       name: "careerAssistant",
@@ -23,9 +18,7 @@ export const careerAssistant = onCallGenkit(
       outputSchema: z.string(),
     },
     async (userInput) => {
-      const response = await ai.generate({
-        prompt: `You are a career mentor for the BlueGold app. Help this student: ${userInput}`,
-      });
+      const response = await ai.generate(`You are a career mentor. User says: ${userInput}`);
       return response.text();
     }
   )

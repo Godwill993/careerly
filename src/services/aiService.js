@@ -1,8 +1,12 @@
-import { getFunctions, httpsCallable } from "firebase/functions";
+import { getFunctions, httpsCallable, connectFunctionsEmulator } from "firebase/functions";
 import { app } from "../firebase/config";
 
-// Force the region to match your console log (us-central1)
 const functions = getFunctions(app, "us-central1");
+
+// FIXED: Automatically connects to your local machine if you're developing locally
+if (window.location.hostname === "localhost") {
+  connectFunctionsEmulator(functions, "localhost", 5001);
+}
 
 export const aiService = {
   generateResponse: async (userInput) => {
@@ -11,9 +15,8 @@ export const aiService = {
       const result = await careerAssistant(userInput);
       return result.data;
     } catch (error) {
-      console.error("Genkit Error:", error);
-      // Detailed error logging to help you see if it's a permission issue
-      return "I'm having trouble connecting. Check your internet or Firebase console.";
+      if (typeof console !== 'undefined') console.error("Emulator Error:", error);
+      return "Make sure you ran 'firebase emulators:start' in your terminal!";
     }
   },
 };

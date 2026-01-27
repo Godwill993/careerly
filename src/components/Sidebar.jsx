@@ -27,11 +27,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       animate={{ width: isOpen ? '260px' : '80px' }}
     >
       <div className={styles.header}>
-        <div className={styles.logoIcon}>B</div>
+        <div className={styles.logoIcon}>C</div>
         <AnimatePresence>
           {isOpen && (
             <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={styles.logoText}>
-              Blue<span className={styles.yellowText}>Gold</span>
+              Careerly
             </motion.span>
           )}
         </AnimatePresence>

@@ -9,6 +9,11 @@ import Register from './pages/Register';
 import StudentDashboard from './pages/StudentDashboard';
 import SchoolDashboard from './pages/SchoolDashboard';
 import AiAssistant from './pages/AiAssistant';
+import CompanyDashboard from './pages/CompanyDashboard';
+import LandingPage from './pages/LandinPage';
+import Internships from './pages/Internship';
+import Ranking from './pages/Ranking';
+import Settings from './pages/Settings';
 
 // Placeholder for missing pages
 const Placeholder = ({ name }) => (
@@ -38,7 +43,7 @@ function AppContent() {
   return (
     <Routes>
       {/* --- PUBLIC ROUTES --- */}
-      <Route path="/" element={<Placeholder name="Landing" />} />
+      <Route path="/" element={<LandingPage name="Landing" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
@@ -48,10 +53,10 @@ function AppContent() {
           
           {/* Shared Pages among all logged-in users */}
           <Route path="/profile" element={<Placeholder name="Profile" />} />
-          <Route path="/settings" element={<Placeholder name="Settings" />} />
+          <Route path="/settings" element={<Settings name="Settings" />} />
           <Route path="/ai-assistant" element={<AiAssistant />} />
-          <Route path="/rankings" element={<Placeholder name="Rankings" />} />
-          <Route path="/internships" element={<Placeholder name="Internships" />} />
+          <Route path="/rankings" element={<Ranking name="Rankings" />} />
+          <Route path="/internships" element={<Internships name="Internships" />} />
 
           {/* --- ROLE-BASED DASHBOARDS --- */}
           
@@ -70,7 +75,7 @@ function AppContent() {
           {/* Company Dashboard */}
           <Route 
             path="/company-dashboard" 
-            element={user?.role === 'company' ? <Placeholder name="Company Dashboard" /> : <Navigate to="/forbidden" />} 
+            element={user?.role === 'company' ? <CompanyDashboard name="Company Dashboard" /> : <Navigate to="/forbidden" />} 
           />
         </Route>
       </Route>
