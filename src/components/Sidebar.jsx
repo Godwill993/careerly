@@ -50,11 +50,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         ))}
       </nav>
 
-      <button className={styles.toggleBtn} onClick={toggleSidebar}>
-        <motion.div animate={{ rotate: isOpen ? 0 : 180 }}>
-          <FaChevronLeft />
-        </motion.div>
-      </button>
+      
     </motion.aside>
   );
 };
