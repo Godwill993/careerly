@@ -34,7 +34,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  background: #f8fafc;
+  background: var(--color-bg);
 }
 
 .aiMsg, .userMsg {
