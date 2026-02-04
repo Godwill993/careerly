@@ -2,7 +2,7 @@
 .list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
 
 .row {
-  background: white;
+  background: var(--color-surface);
   padding: 1.5rem;
   border-radius: var(--border-radius);
   border: 1px solid var(--color-border);

@@ -128,27 +128,16 @@ const Internships = () => {
   return (
     <div className="intern-wrapper">
       <style>{`
-        :root {
-          --brand-blue: #2563eb;
-          --brand-gold: #eab308;
-          --bg-slate: #f8fafc;
-          --border-slate: #e2e8f0;
-          --text-main: #0f172a;
-          --text-muted: #64748b;
-          --success: #10b981;
-          --glass: rgba(255, 255, 255, 0.8);
-        }
-
         .intern-wrapper {
-          background-color: var(--bg-slate);
+          background-color: var(--color-bg);
           min-height: 100vh;
           font-family: 'Inter', system-ui, sans-serif;
-          color: var(--text-main);
+          color: var(--color-text);
         }
 
         .top-bar {
-          background: white;
-          border-bottom: 1px solid var(--border-slate);
+          background: var(--color-surface);
+          border-bottom: 1px solid var(--color-border);
           padding: 16px 32px;
           display: flex;
           align-items: center;
@@ -161,12 +150,12 @@ const Internships = () => {
         .nav-links { display: flex; gap: 32px; }
         .nav-item { 
           font-weight: 600; 
-          color: var(--text-muted); 
+          color: var(--color-text-muted); 
           cursor: pointer; 
           padding: 8px 0;
           position: relative;
         }
-        .nav-item.active { color: var(--brand-blue); }
+        .nav-item.active { color: var(--color-primary); }
         .nav-item.active::after {
           content: '';
           position: absolute;
@@ -174,32 +163,15 @@ const Internships = () => {
           left: 0;
           width: 100%;
           height: 2px;
-          background: var(--brand-blue);
-        }
-
-        .main-content {
-          max-width: 1300px;
-          margin: 0 auto;
-          padding: 40px 24px;
-        }
-
-        .ranking-dashboard {
-          display: flex;
-          flex-direction: column;
-          gap: 32px;
+          background: var(--color-primary);
         }
 
         .rank-card-detailed {
-          background: white;
+          background: var(--color-surface);
           border-radius: 24px;
-          border: 1px solid var(--border-slate);
+          border: 1px solid var(--color-border);
           overflow: hidden;
           transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .rank-card-detailed:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05);
         }
 
         .rank-card-header {
@@ -207,49 +179,41 @@ const Internships = () => {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          border-bottom: 1px solid var(--border-slate);
-          background: linear-gradient(to right, #ffffff, #f1f5f9);
-        }
-
-        .profile-main {
-          display: flex;
-          align-items: center;
-          gap: 20px;
+          border-bottom: 1px solid var(--color-border);
+          background: var(--color-surface);
         }
 
         .rank-number {
           font-size: 32px;
           font-weight: 900;
-          color: var(--brand-blue);
+          color: var(--color-primary);
           opacity: 0.3;
         }
 
-        .user-info h3 { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
-        
         .score-circle {
           width: 80px;
           height: 80px;
           border-radius: 50%;
-          border: 4px solid var(--brand-blue);
+          border: 4px solid var(--color-primary);
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          background: white;
+          background: var(--color-surface);
         }
 
-        .score-val { font-size: 20px; font-weight: 900; color: var(--brand-blue); }
-        .score-label { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .score-val { font-size: 20px; font-weight: 900; color: var(--color-primary); }
+        .score-label { font-size: 10px; font-weight: 800; color: var(--color-text-muted); text-transform: uppercase; }
 
         .rank-body {
           display: grid;
           grid-template-columns: 1fr 1fr 300px;
           gap: 1px;
-          background: var(--border-slate);
+          background: var(--color-border);
         }
 
         .rank-section {
-          background: white;
+          background: var(--color-surface);
           padding: 24px;
         }
 
@@ -259,28 +223,17 @@ const Internships = () => {
           gap: 8px;
           font-size: 12px;
           font-weight: 800;
-          color: var(--text-muted);
+          color: var(--color-text-muted);
           text-transform: uppercase;
           margin-bottom: 16px;
         }
 
-        .data-point {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 12px;
-          font-size: 14px;
-        }
-
-        .data-label { color: var(--text-muted); }
-        .data-value { font-weight: 700; color: var(--text-main); }
-
-        .skill-bar-wrap {
-          margin-top: 20px;
-        }
+        .data-label { color: var(--color-text-muted); }
+        .data-value { font-weight: 700; color: var(--color-text); }
 
         .skill-bar-container {
           height: 8px;
-          background: var(--bg-slate);
+          background: var(--color-bg);
           border-radius: 4px;
           margin-bottom: 12px;
           overflow: hidden;
@@ -288,22 +241,22 @@ const Internships = () => {
 
         .skill-bar-fill {
           height: 100%;
-          background: var(--brand-blue);
+          background: var(--color-primary);
           border-radius: 4px;
         }
 
         .badge-pill {
           padding: 4px 12px;
-          background: #eff6ff;
-          color: var(--brand-blue);
+          background: var(--color-primary-light);
+          color: var(--color-primary);
           border-radius: 20px;
           font-size: 11px;
           font-weight: 700;
-          border: 1px solid #dbeafe;
+          border: 1px solid var(--color-border);
         }
 
         .apply-btn {
-          background: var(--brand-blue);
+          background: var(--color-primary);
           color: white;
           padding: 12px 24px;
           border-radius: 12px;
@@ -368,7 +321,7 @@ const Internships = () => {
                       </div>
                       <div className="data-point">
                         <span className="data-label">GPA</span>
-                        <span className="data-value" style={{ color: 'var(--success)' }}>{person.academic.gpa}</span>
+                        <span className="data-value" style={{ color: 'var(--color-success)' }}>{person.academic.gpa}</span>
                       </div>
                       <div className="data-point">
                         <span className="data-label">Major</span>
@@ -431,7 +384,7 @@ const Internships = () => {
                             initial={{ width: 0 }} 
                             animate={{ width: `${person.skills.soft}%` }} 
                             className="skill-bar-fill" 
-                            style={{ background: 'var(--brand-gold)' }} 
+                            style={{ background: 'var(--color-warning)' }} 
                           />
                         </div>
 
@@ -444,7 +397,7 @@ const Internships = () => {
                             initial={{ width: 0 }} 
                             animate={{ width: `${person.skills.impact}%` }} 
                             className="skill-bar-fill" 
-                            style={{ background: 'var(--success)' }} 
+                            style={{ background: 'var(--color-success)' }} 
                           />
                         </div>
                       </div>

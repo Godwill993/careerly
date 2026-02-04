@@ -4,11 +4,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
-  background-color: var(--bg-main);
+  background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
   z-index: 100;
+  transition: background-color var(--transition-standard);
 }
 
 .leftSection {
@@ -35,11 +36,17 @@
 .searchWrapper {
   display: flex;
   align-items: center;
-  background-color: #f3f4f6;
+  background-color: var(--color-bg); /* Replaced #f3f4f6 */
   padding: 0.6rem 1rem;
   border-radius: var(--border-radius);
   width: 300px;
   gap: 0.75rem;
+  border: 1px solid transparent;
+  transition: border-color var(--transition-fast);
+}
+
+.searchWrapper:focus-within {
+  border-color: var(--color-primary);
 }
 
 .searchIcon {
@@ -53,6 +60,10 @@
   width: 100%;
   font-size: 0.9rem;
   color: var(--color-text);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
 }
 
 .rightSection {
@@ -69,6 +80,10 @@
   display: flex;
 }
 
+.iconBadge:hover {
+  color: var(--color-text);
+}
+
 .dot {
   position: absolute;
   top: -2px;
@@ -76,7 +91,7 @@
   width: 8px;
   height: 8px;
   background-color: #ef4444; /* Alert Red */
-  border: 2px solid white;
+  border: 2px solid var(--color-surface); /* Replaced white border */
   border-radius: 50%;
 }
 
@@ -110,7 +125,6 @@
   color: var(--color-primary);
   cursor: pointer;
 }
-/* ... (Append to existing Navbar.module.css) ... */
 
 .logoutBtn {
   background: none;
@@ -127,7 +141,7 @@
 }
 
 .logoutBtn:hover {
-  background: #fff1f1;
+  background: var(--color-bg); /* Replaced #fff1f1 */
 }
 
 /* Responsive adjustments */

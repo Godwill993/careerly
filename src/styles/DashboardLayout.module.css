@@ -1,7 +1,7 @@
 .layoutContainer {
   display: flex;
   min-height: 100vh;
-  background-color: #f9fafb; /* Slightly off-white for content area contrast */
+  background-color: var(--color-bg); /* Uses theme variable */
   overflow: hidden;
 }
 

@@ -16,7 +16,7 @@
 }
 
 .statCard {
-  background: white;
+  background: var(--color-surface);
   padding: 1.5rem;
   border-radius: var(--border-radius);
   display: flex;
@@ -36,7 +36,7 @@
 }
 
 .contentSection {
-  background: white;
+  background: var(--color-surface);
   padding: 2rem;
   border-radius: var(--border-radius);
   border: 1px solid var(--color-border);
@@ -75,7 +75,7 @@
   border: 1px solid var(--color-border);
   padding: 1.5rem;
   border-radius: 12px;
-  background: #fff;
+  background: var(--color-surface);
 }
 .cardHeader {
   display: flex;

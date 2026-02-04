@@ -1,17 +1,27 @@
 /* 1. CSS Variables - Change these to update the entire theme */
+/* 1. CSS Variables - Theme Tokens */
 :root {
-  /* Colors */
-  --color-bg: #ffffff;
-  --color-text: #1a1a1a;
-  --color-text-muted: #666666;
+  /* Light Mode Defaults */
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
   
-  --color-primary: #2563eb;      /* Blue Accent */
-  --color-primary-hover: #1d4ed8;
-  
-  --color-secondary: #facc15;    /* Yellow Accent */
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-light: #eff6ff;
+
+  --color-secondary: #facc15;
   --color-secondary-hover: #eab308;
 
-  --color-border: #e5e7eb;
+  --color-border: #e2e8f0;
+  
+  --color-success: #10b981;
+  --color-warning: #eab308;
+  --color-danger: #ef4444;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 
   /* Typography */
   --font-main: 'Inter', system-ui, -apple-system, sans-serif;
@@ -20,7 +30,24 @@
   /* Transitions & Misc */
   --transition-fast: 0.2s ease-in-out;
   --transition-standard: 0.3s ease;
-  --border-radius: 8px;
+  --border-radius: 0.75rem;
+}
+
+/* Dark Mode Overrides */
+[data-theme='dark'] {
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-text: #f8fafc;
+  --color-text-muted: #94a3b8;
+  
+  --color-primary: #60a5fa;
+  --color-primary-hover: #3b82f6;
+  --color-primary-light: #1e3a8a;
+
+  --color-border: #334155;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
 }
 
 /* 2. Reset & Global Defaults */

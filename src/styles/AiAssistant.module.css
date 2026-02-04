@@ -7,7 +7,7 @@
 .chatWindow {
   width: 100%;
   max-width: 800px;
-  background: white;
+  background: var(--color-surface);
   border-radius: 16px;
   border: 1px solid var(--color-border);
   display: flex;
@@ -47,7 +47,7 @@
 
 .aiMsg {
   align-self: flex-start;
-  background: white;
+  background: var(--color-surface);
   color: var(--color-text);
   border: 1px solid var(--color-border);
   border-bottom-left-radius: 2px;
@@ -73,15 +73,16 @@
 
 .quickActions button {
   padding: 0.5rem 1rem;
-  background: #f1f5f9;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 20px;
   font-size: 0.8rem;
   cursor: pointer;
   transition: 0.2s;
+  color: var(--color-text);
 }
 
-.quickActions button:hover { background: #e2e8f0; }
+.quickActions button:hover { background: var(--color-border); }
 
 .inputWrapper {
   display: flex;
@@ -94,6 +95,8 @@
   border: 1px solid var(--color-border);
   border-radius: 25px;
   outline: none;
+  background: var(--color-surface);
+  color: var(--color-text);
 }
 
 .sendBtn {

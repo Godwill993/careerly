@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import DashboardLayout from './layouts/DashboardLayout';
 import ProtectedRoute from './components/ProtectedRoute';
+import './App.css';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -16,9 +17,9 @@ import Settings from './pages/Settings';
 
 // Placeholder for missing pages
 const Placeholder = ({ name }) => (
-  <div style={{ padding: '2rem', background: 'white', borderRadius: 'var(--border-radius)', border: '1px solid var(--color-border)' }}>
-    <h2 style={{ color: 'var(--color-primary)' }}>{name} Page</h2>
-    <p style={{ color: 'var(--color-text-muted)', marginTop: '0.5rem' }}>
+  <div className="placeholder-container">
+    <h2 className="placeholder-title">{name} Page</h2>
+    <p className="placeholder-text">
       This section is currently under development.
     </p>
   </div>
@@ -30,10 +31,10 @@ function AppContent() {
   // Global loading state for Firebase Auth persistence
   if (loading) {
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9fafb' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div className="spinner" style={{ marginBottom: '1rem' }}></div>
-          <p style={{ color: 'var(--color-text-muted)', fontWeight: '500' }}>Authenticating...</p>
+      <div className="loading-container">
+        <div className="loading-content">
+          <div className="spinner"></div>
+          <p className="loading-text">Authenticating...</p>
         </div>
       </div>
     );

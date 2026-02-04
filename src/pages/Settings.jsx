@@ -19,22 +19,27 @@ import {
   Download
 } from 'lucide-react';
 
+import { useTheme } from '../context/ThemeContext';
+
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [saved, setSaved] = useState(false);
-  // In a real app, this 'theme' state would come from a Global Theme Context
-  const [theme, setTheme] = useState('light');
+  
+  // Use global theme context instead of local state
+  const { theme, toggleTheme } = useTheme();
 
   // Effect to apply theme class to body so it affects the whole platform
   useEffect(() => {
-    document.body.className = theme;
+    // This effect is now handled globally in ThemeProvider, but we can keep it if specific class needed
+    // or remove it as ThemeProvider likely handles attribute setting.
+    // Assuming ThemeProvider handles 'data-theme'.
   }, [theme]);
 
   const handleSave = () => {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
-
+  
   const menuItems = [
     { id: 'profile', label: 'Profile Information', icon: <User size={18} /> },
     { id: 'notifications', label: 'Notifications', icon: <Bell size={18} /> },
@@ -45,9 +50,6 @@ const Settings = () => {
   return (
     <div className={`settings-wrapper ${theme}`}>
       <style>{`
-        
-      
-
         .settings-wrapper {
           min-height: 100vh;
           background-color: var(--bg-main);
@@ -239,10 +241,16 @@ const Settings = () => {
               <div className="input-group">
                 <label>Interface Theme</label>
                 <div className="theme-toggle-box">
-                  <button className={`theme-btn ${theme === 'light' ? 'active' : ''}`} onClick={() => setTheme('light')}>
+                  <button 
+                    className={`theme-btn ${theme === 'light' ? 'active' : ''}`} 
+                    onClick={() => theme === 'dark' && toggleTheme()}
+                  >
                     <Sun size={16} /> Light
                   </button>
-                  <button className={`theme-btn ${theme === 'dark' ? 'active' : ''}`} onClick={() => setTheme('dark')}>
+                  <button 
+                    className={`theme-btn ${theme === 'dark' ? 'active' : ''}`} 
+                    onClick={() => theme === 'light' && toggleTheme()}
+                  >
                     <Moon size={16} /> Dark
                   </button>
                 </div>
@@ -307,7 +315,7 @@ const Settings = () => {
                 <label>Current Password</label>
                 <input className="input-field" type="password" placeholder="••••••••" />
               </div>
-              <div style={{ marginTop: '32px', padding: '20px', background: 'var(--bg-main)', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+              <div style={{ marginTop: '32px', padding: '20px', background: 'var(--color-surface)', borderRadius: '16px', border: '1px solid var(--color-border)' }}>
                 <div style={{ display: 'flex', gap: '12px' }}>
                   <Smartphone size={20} color="var(--accent-blue)" />
                   <div>

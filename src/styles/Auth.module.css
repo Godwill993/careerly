@@ -3,14 +3,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f9fafb;
+  background-color: var(--color-bg);
 }
 
 .authCard {
-  background: white;
+  background: var(--color-surface);
   padding: 2.5rem;
   border-radius: var(--border-radius);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   width: 100%;
   max-width: 400px;
   display: flex;
@@ -20,11 +20,15 @@
 
 .authCard h2 { color: var(--color-primary); text-align: center; }
 
+.authCard p { color: var(--color-text-muted); text-align: center; } /* Added specific selector for p to ensure visibility */
+
 .authCard input, .select {
   padding: 0.8rem;
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
   outline: none;
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 .googleBtn {
@@ -32,12 +36,17 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: white;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   padding: 0.8rem;
   cursor: pointer;
   border-radius: var(--border-radius);
+  color: var(--color-text);
+}
+
+.googleBtn:hover {
+  background-color: var(--color-bg);
 }
 
 .divider { text-align: center; color: var(--color-text-muted); font-size: 0.8rem; }
-.switch { text-align: center; font-size: 0.9rem; margin-top: 1rem; }
+.switch { text-align: center; font-size: 0.9rem; margin-top: 1rem; color: var(--color-text); }

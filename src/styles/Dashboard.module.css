@@ -15,7 +15,7 @@
 .searchBar {
   display: flex;
   align-items: center;
-  background: white;
+  background: var(--color-surface);
   padding: 0.6rem 1rem;
   border-radius: var(--border-radius);
   border: 1px solid var(--color-border);
@@ -24,7 +24,13 @@
   gap: 0.8rem;
 }
 
-.searchBar input { border: none; outline: none; width: 100%; }
+.searchBar input { 
+  border: none; 
+  outline: none; 
+  width: 100%; 
+  background: transparent;
+  color: var(--color-text);
+}
 
 .statsGrid {
   display: grid;
@@ -33,16 +39,17 @@
 }
 
 .statCard {
-  background: white;
+  background: var(--color-surface);
   padding: 1.5rem;
   border-radius: var(--border-radius);
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
 }
 
-.statIcon { font-size: 2rem; }
+.statIcon { font-size: 2rem; color: var(--color-primary); }
 
 .mainGrid {
   display: grid;
@@ -58,51 +65,70 @@
 }
 
 .internCard {
-  background: white;
+  background: var(--color-surface);
   border-radius: var(--border-radius);
   overflow: hidden;
   border: 1px solid var(--color-border);
   position: relative;
+  transition: transform var(--transition-fast);
 }
 
-.imagePlaceholder { position: relative; height: 150px; background: #eee; }
+.internCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.imagePlaceholder { position: relative; height: 150px; background: var(--color-bg); }
 .imagePlaceholder img { width: 100%; height: 100%; object-fit: cover; }
 
 .bookmarkBtn {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: white;
+  background: var(--color-surface);
   border: none;
   padding: 0.5rem;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text-muted);
+}
+
+.bookmarkBtn:hover {
+  color: var(--color-primary);
 }
 
 .cardBody { padding: 1.2rem; }
-.tag { font-size: 0.7rem; background: #eff6ff; color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold; }
+.cardBody h3 { color: var(--color-text); margin-bottom: 0.5rem; }
+.cardBody p { color: var(--color-text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
+
+.tag { font-size: 0.7rem; background: var(--color-primary-light); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold; }
 
 .rankCard {
-  background: white;
+  background: var(--color-surface);
   padding: 1.5rem;
   border-radius: var(--border-radius);
   border: 1px solid var(--color-border);
   margin-bottom: 1.5rem;
 }
 
+.rankCard h3 { color: var(--color-text); margin-bottom: 1rem; }
+
 .rankItem {
   display: flex;
   justify-content: space-between;
   padding: 0.8rem 0;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
 }
+
+.rankItem:last-child { border-bottom: none; }
 
 /* Skeleton Loading Animation */
 .skeleton { pointer-events: none; }
-.skeletonImage { height: 150px; background: #e5e7eb; animation: pulse 1.5s infinite; }
-.skeletonText { height: 15px; background: #e5e7eb; margin: 15px; border-radius: 4px; animation: pulse 1.5s infinite; }
+.skeletonImage { height: 150px; background: var(--color-border); animation: pulse 1.5s infinite; }
+.skeletonText { height: 15px; background: var(--color-border); margin: 15px; border-radius: 4px; animation: pulse 1.5s infinite; }
 
 @keyframes pulse {
   0% { opacity: 0.6; }

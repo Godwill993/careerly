@@ -4,7 +4,7 @@ import { app } from "../firebase/config";
 const functions = getFunctions(app, "us-central1");
 
 // FIXED: Automatically connects to your local machine if you're developing locally
-if (window.location.hostname === "localhost") {
+if (import.meta.env.DEV) {
   connectFunctionsEmulator(functions, "localhost", 5001);
 }
 

@@ -93,25 +93,16 @@ const Internships = () => {
   return (
     <div className="intern-wrapper">
       <style>{`
-        :root {
-          --brand-blue: #2563eb;
-          --brand-gold: #eab308;
-          --bg-slate: #f8fafc;
-          --border-slate: #e2e8f0;
-          --text-main: #0f172a;
-          --text-muted: #64748b;
-        }
-
         .intern-wrapper {
-          background-color: var(--bg-slate);
+          background-color: var(--color-bg);
           min-height: 100vh;
           font-family: 'Inter', system-ui, sans-serif;
-          color: var(--text-main);
+          color: var(--color-text);
         }
 
         .top-bar {
-          background: white;
-          border-bottom: 1px solid var(--border-slate);
+          background: var(--color-surface);
+          border-bottom: 1px solid var(--color-border);
           padding: 16px 32px;
           display: flex;
           align-items: center;
@@ -128,14 +119,14 @@ const Internships = () => {
         }
 
         .search-bar-wrap {
-          background: white;
+          background: var(--color-surface);
           padding: 8px;
           border-radius: 20px;
           display: flex;
           align-items: center;
           gap: 12px;
           box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
-          border: 1px solid var(--border-slate);
+          border: 1px solid var(--color-border);
         }
 
         .search-input {
@@ -144,6 +135,8 @@ const Internships = () => {
           padding: 12px;
           font-size: 16px;
           outline: none;
+          background: transparent;
+          color: var(--color-text);
         }
 
         .filter-btn {
@@ -151,11 +144,89 @@ const Internships = () => {
           align-items: center;
           gap: 8px;
           padding: 10px 20px;
-          background: var(--bg-slate);
+          background: var(--color-bg);
           border-radius: 12px;
           font-weight: 600;
           border: none;
           cursor: pointer;
+          color: var(--color-text);
+        }
+
+        .job-card {
+          background: var(--color-surface);
+          padding: 24px;
+          border-radius: 20px;
+          border: 2px solid transparent;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .job-card.active {
+          border-color: var(--color-primary);
+          background: var(--color-primary-light);
+        }
+
+        .company-logo-placeholder {
+          width: 48px;
+          height: 48px;
+          background: var(--color-border);
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--color-text-muted);
+        }
+
+        .company-name { color: var(--color-primary); font-weight: 700; font-size: 14px; }
+
+        .meta-row {
+          display: flex;
+          gap: 16px;
+          color: var(--color-text-muted);
+          font-size: 13px;
+          margin-top: 12px;
+        }
+
+        .detail-view {
+          background: var(--color-surface);
+          border-radius: 24px;
+          border: 1px solid var(--color-border);
+          padding: 40px;
+          position: sticky;
+          top: 100px;
+          height: fit-content;
+        }
+
+        .apply-btn {
+          background: var(--color-primary);
+          color: white;
+          padding: 14px 32px;
+          border-radius: 14px;
+          font-weight: 800;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .tag {
+          padding: 4px 12px;
+          background: var(--color-bg);
+          border-radius: 8px;
+          font-size: 12px;
+          font-weight: 600;
+          color: var(--color-text-muted);
+        }
+
+        .section-label {
+          font-weight: 800;
+          text-transform: uppercase;
+          font-size: 12px;
+          letter-spacing: 0.05em;
+          color: var(--color-text-muted);
+          margin: 32px 0 16px;
+          display: block;
         }
 
         .main-content {
@@ -171,100 +242,6 @@ const Internships = () => {
           display: flex;
           flex-direction: column;
           gap: 16px;
-        }
-
-        .job-card {
-          background: white;
-          padding: 24px;
-          border-radius: 20px;
-          border: 2px solid transparent;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-
-        .job-card.active {
-          border-color: var(--brand-blue);
-          background: #eff6ff;
-        }
-
-        .job-card-header {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 12px;
-        }
-
-        .company-logo-placeholder {
-          width: 48px;
-          height: 48px;
-          background: var(--border-slate);
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-muted);
-        }
-
-        .job-title { font-weight: 800; font-size: 18px; margin-bottom: 4px; }
-        .company-name { color: var(--brand-blue); font-weight: 700; font-size: 14px; }
-
-        .meta-row {
-          display: flex;
-          gap: 16px;
-          color: var(--text-muted);
-          font-size: 13px;
-          margin-top: 12px;
-        }
-
-        .meta-item { display: flex; align-items: center; gap: 4px; }
-
-        .detail-view {
-          background: white;
-          border-radius: 24px;
-          border: 1px solid var(--border-slate);
-          padding: 40px;
-          position: sticky;
-          top: 100px;
-          height: fit-content;
-        }
-
-        .detail-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 32px;
-        }
-
-        .apply-btn {
-          background: var(--brand-blue);
-          color: white;
-          padding: 14px 32px;
-          border-radius: 14px;
-          font-weight: 800;
-          border: none;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .tag-row { display: flex; gap: 8px; margin-top: 16px; }
-        .tag {
-          padding: 4px 12px;
-          background: var(--bg-slate);
-          border-radius: 8px;
-          font-size: 12px;
-          font-weight: 600;
-          color: var(--text-muted);
-        }
-
-        .section-label {
-          font-weight: 800;
-          text-transform: uppercase;
-          font-size: 12px;
-          letter-spacing: 0.05em;
-          color: var(--text-muted);
-          margin: 32px 0 16px;
-          display: block;
         }
 
         .req-list {
