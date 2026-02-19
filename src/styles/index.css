@@ -115,3 +115,33 @@ body {
 a, button, input {
   transition: var(--transition-fast);
 }
+
+/* 4. Responsive Utilities & Global Media Queries */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .hide-on-mobile {
+    display: none !important;
+  }
+  
+  .show-on-mobile {
+    display: block !important;
+  }
+  
+  /* Adjust font sizes for mobile */
+  html {
+    font-size: 14px;
+  }
+  
+  :root {
+    --font-size-base: 14px;
+  }
+}
+
+@media (min-width: 769px) {
+  .show-on-mobile {
+    display: none !important;
+  }
+}

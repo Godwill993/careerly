@@ -6,7 +6,7 @@ import styles from '../styles/AiAssistant.module.css';
 
 const AiAssistant = () => {
   const [messages, setMessages] = useState([
-    { role: 'ai', content: 'Hello! I am your BlueGold AI. How can I help your career today?' }
+    { role: 'ai', content: 'Hello! I am your Careerly AI. How can I help your career today?' }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);

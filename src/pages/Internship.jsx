@@ -257,9 +257,39 @@ const Internships = () => {
           font-weight: 500;
         }
 
+        .job-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 12px;
+        }
+
         @media (max-width: 900px) {
           .main-content { grid-template-columns: 1fr; }
           .detail-view { display: none; }
+          
+          .search-bar-wrap {
+            flex-direction: column;
+            gap: 16px;
+            padding: 16px;
+          }
+          
+          .search-input {
+            width: 100%;
+          }
+          
+          .filter-btn {
+            width: 100%;
+            justify-content: center;
+          }
+          
+          .top-bar {
+            padding: 16px;
+          }
+          
+          .search-container {
+            padding: 20px 16px;
+          }
         }
       `}</style>
 

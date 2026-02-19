@@ -63,19 +63,43 @@ function AppContent() {
           {/* Student Dashboard */}
           <Route 
             path="/student-dashboard" 
-            element={user?.role === 'student' ? <StudentDashboard /> : <Navigate to="/forbidden" />} 
+            element={
+              !user?.role ? (
+                <div className="loading-container"><div className="spinner"></div></div>
+              ) : user.role === 'student' ? (
+                <StudentDashboard />
+              ) : (
+                <Navigate to="/forbidden" />
+              )
+            } 
           />
 
           {/* School Dashboard */}
           <Route 
             path="/school-dashboard" 
-            element={user?.role === 'school' ? <SchoolDashboard /> : <Navigate to="/forbidden" />} 
+            element={
+              !user?.role ? (
+                <div className="loading-container"><div className="spinner"></div></div>
+              ) : user.role === 'school' ? (
+                <SchoolDashboard />
+              ) : (
+                <Navigate to="/forbidden" />
+              )
+            } 
           />
 
           {/* Company Dashboard */}
           <Route 
             path="/company-dashboard" 
-            element={user?.role === 'company' ? <CompanyDashboard name="Company Dashboard" /> : <Navigate to="/forbidden" />} 
+            element={
+              !user?.role ? (
+                <div className="loading-container"><div className="spinner"></div></div>
+              ) : user.role === 'company' ? (
+                <CompanyDashboard name="Company Dashboard" />
+              ) : (
+                <Navigate to="/forbidden" />
+              )
+            } 
           />
         </Route>
       </Route>

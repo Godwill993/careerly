@@ -112,6 +112,7 @@
 .text-gradient-fancy {
   background: linear-gradient(to right, #fff, var(--gold-neon), #fff);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 200% auto;
   animation: shine 5s linear infinite;
@@ -328,4 +329,87 @@
   border-top: 1px solid var(--glass-border);
   color: #52525b;
   font-size: 0.9rem;
+}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 1rem;
+  }
+  
+  .brand-name {
+    font-size: 1.2rem;
+  }
+  
+  /* Hero */
+  .hero-fancy {
+    padding: 120px 1rem 60px;
+  }
+  
+  .hero-title-fancy {
+    font-size: clamp(2.5rem, 10vw, 3.5rem);
+  }
+  
+  .hero-subtitle-fancy {
+    font-size: 1rem;
+    margin: 1.5rem 0 2rem;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+  }
+  
+  .btn-primary-glow, .btn-glass-play {
+    width: 100%;
+    justify-content: center;
+    padding: 16px;
+  }
+  
+  /* Dashboard Preview */
+  .dashboard-preview-container {
+    margin-top: 40px;
+    perspective: none; /* Flatten 3D effect on mobile for better readability/fit */
+  }
+  
+  .dashboard-glass {
+    transform: none; /* Remove rotation */
+    width: 100%;
+  }
+  
+  .dashboard-content {
+    height: 300px;
+  }
+  
+  .stat-pill {
+    bottom: 10px;
+    right: 10px;
+    padding: 8px 15px;
+    font-size: 0.8rem;
+  }
+  
+  /* Grids */
+  .glass-grid, .testimonial-grid {
+    grid-template-columns: 1fr; /* Force single column */
+    gap: 20px;
+  }
+  
+  .solutions-fancy, .testimonials {
+    padding: 60px 1rem;
+  }
+  
+  .glass-card, .testimonial-card {
+    padding: 30px;
+  }
+  
+  /* Steps */
+  .steps-container {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .step-item {
+    width: 100%;
+  }
 }

@@ -7,7 +7,7 @@ import { getMenuItems } from '../config/navigation.jsx';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'; // Added icons
 import styles from '../styles/Sidebar.module.css';
 
-const Sidebar = ({ isOpen, toggleSidebar }) => {
+const Sidebar = ({ isOpen, toggleSidebar, onCloseMobile }) => {
   const { user } = useAuth();
 
   const menuItems = getMenuItems(user?.role);
@@ -16,6 +16,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     <motion.aside 
       className={styles.sidebar}
       animate={{ width: isOpen ? '260px' : '80px' }}
+      // On mobile, if open, we want it full width or fixed width, simplified here by reliance on CSS class
     >
       <div className={styles.header}>
         <div className={styles.logoIcon}>C</div>
@@ -39,6 +40,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             to={item.path} 
             key={item.id} 
             className={({ isActive }) => isActive ? `${styles.navItem} ${styles.active}` : styles.navItem}
+            onClick={onCloseMobile} // Close sidebar on mobile when link is clicked
           >
             <div className={styles.icon}>{item.icon}</div>
             {isOpen && (

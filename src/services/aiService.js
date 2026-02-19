@@ -5,7 +5,7 @@ const functions = getFunctions(app, "us-central1");
 
 // FIXED: Automatically connects to your local machine if you're developing locally
 if (import.meta.env.DEV) {
-  connectFunctionsEmulator(functions, "localhost", 5001);
+  connectFunctionsEmulator(functions, "127.0.0.1", 5001);
 }
 
 export const aiService = {

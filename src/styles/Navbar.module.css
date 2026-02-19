@@ -141,15 +141,34 @@
 }
 
 .logoutBtn:hover {
-  background: var(--color-bg); /* Replaced #fff1f1 */
+  background: var(--color-bg);
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
-  .searchWrapper {
-    display: none; /* Hide search on mobile to save space */
+  .navbar {
+    padding: 0 1rem;
+    height: 60px;
   }
+
+  .searchWrapper {
+    display: none;
+  }
+  
   .userInfo {
     display: none;
+  }
+  
+  .rightSection {
+    gap: 1rem;
+  }
+  
+  .profileSection {
+    padding-left: 0.5rem;
+    border-left: none; /* Remove border on mobile to save space */
+  }
+  
+  .menuButton {
+    display: flex; /* Ensure it's visible */
   }
 }

@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { 
   onAuthStateChanged, 
-  GoogleAuthProvider,
-  GithubAuthProvider, 
+  GoogleAuthProvider, 
   signInWithPopup 
 } from 'firebase/auth';
-import { auth } from '../firebase/config';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { auth, db } from '../firebase/config';
 import { userService } from '../services/userService';
 
 const AuthContext = createContext();
@@ -15,17 +15,39 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    let unsubscribeSnapshot = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser) => {
+      // Clean up previous snapshot listener if it exists (e.g. user switch)
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
+      }
+
       if (firebaseUser) {
-        // Fetch custom role and data from Firestore
-        const profile = await userService.getUserProfile(firebaseUser.uid);
-        setUser({ ...firebaseUser, ...profile });
+        const userRef = doc(db, "users", firebaseUser.uid);
+        unsubscribeSnapshot = onSnapshot(userRef, (docSnap) => {
+          if (docSnap.exists()) {
+            setUser({ ...firebaseUser, ...docSnap.data() });
+          } else {
+            // Document might not exist yet during registration
+            setUser(firebaseUser);
+          }
+          setLoading(false);
+        }, (error) => {
+          console.error("Error fetching user profile:", error);
+          setLoading(false);
+        });
       } else {
         setUser(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
-    return () => unsubscribe();
+
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeSnapshot) unsubscribeSnapshot();
+    };
   }, []);
 
   const googleLogin = async () => {
@@ -33,7 +55,6 @@ export const AuthProvider = ({ children }) => {
     return signInWithPopup(auth, provider);
   };
   
-
   return (
     <AuthContext.Provider value={{ user, loading, googleLogin }}>
       {!loading && children}

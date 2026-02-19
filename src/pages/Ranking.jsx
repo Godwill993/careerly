@@ -36,9 +36,9 @@ const Internships = () => {
       id: 1,
       title: "Product Design Intern",
       company: "InnovateTech",
-      location: "San Francisco, CA (Hybrid)",
+      location: "Bamenda, CA (Hybrid)",
       type: "Full-time",
-      stipend: "$4,500/mo",
+      stipend: "XAF 14000/mo",
       duration: "3 Months",
       posted: "2 days ago",
       description: "Join our core design team to build the next generation of fintech products. You'll work directly with senior designers on high-impact user interfaces.",
@@ -51,7 +51,7 @@ const Internships = () => {
       company: "DataCloud",
       location: "Remote",
       type: "Part-time",
-      stipend: "$35/hr",
+      stipend: "XAF 7000/hr",
       duration: "6 Months",
       posted: "5 hours ago",
       description: "Help us scale our distributed systems. You will be contributing to open-source tools and internal infrastructure using Go and Kubernetes.",
@@ -62,12 +62,12 @@ const Internships = () => {
 
   const rankings = [
     { 
-      name: "Alex Rivera", 
-      score: 98.4, 
+      name: "TABI JACOB", 
+      score:12.4, 
       rank: 1,
       academic: {
-        gpa: "4.0",
-        institution: "Stanford University",
+        gpa: "3.0",
+        institution: "UNHIMAS",
         major: "Computer Science",
         honors: "Dean's List (4Y)",
         research: "AI Optimization"
@@ -78,16 +78,16 @@ const Internships = () => {
         certifications: ["AWS Solutions Architect", "Google Cloud Professional"],
         contributions: "500+ GitHub Commits"
       },
-      skills: { technical: 98, soft: 92, impact: 95 },
+      skills: { technical: 98, soft: 74, impact: 45 },
       badges: ["Top 1%", "Research Fellow"]
     },
     { 
-      name: "Sarah Chen", 
-      score: 95.8, 
+      name: "NYAMNDI ZIAN", 
+      score: 92.8, 
       rank: 2,
       academic: {
         gpa: "3.95",
-        institution: "MIT",
+        institution: "YIBS",
         major: "Data Science",
         honors: "Summa Cum Laude",
         research: "Quantum Computing"
@@ -102,13 +102,13 @@ const Internships = () => {
       badges: ["Innovation Award", "Hackathon Hero"]
     },
     { 
-      name: "Jordan Smith", 
+      name: "WARREN PETER", 
       score: 93.2, 
       rank: 3,
       academic: {
         gpa: "3.88",
-        institution: "UC Berkeley",
-        major: "EECS",
+        institution: "POLYTECH YDE",
+        major: "MECHANICAL ENG.",
         honors: "Tau Beta Pi",
         research: "Robotics"
       },
@@ -265,8 +265,34 @@ const Internships = () => {
           cursor: pointer;
         }
 
+
         @media (max-width: 1000px) {
           .rank-body { grid-template-columns: 1fr; }
+          
+          .rank-card-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+          }
+          
+          .score-circle {
+            align-self: flex-end; /* Move score to right/bottom of header or keep it inline? Let's align right */
+            margin-top: -40px; /* Overlap or just adjust */
+            margin-top: 0;
+            width: 60px;
+            height: 60px;
+          }
+          
+          .score-val { font-size: 16px; }
+          .score-label { font-size: 8px; }
+          
+          .rank-number {
+             font-size: 24px;
+          }
+          
+          .rank-card-detailed {
+            border-radius: 16px;
+          }
         }
       `}</style>
 

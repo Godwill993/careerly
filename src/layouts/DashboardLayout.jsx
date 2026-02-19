@@ -9,9 +9,24 @@ const DashboardLayout = () => {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  // Close sidebar on mobile when navigating
+  const closeSidebarOnMobile = () => {
+    if (window.innerWidth <= 768) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   return (
     <div className={styles.layoutContainer}>
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} onCloseMobile={closeSidebarOnMobile} />
+      
+      {/* Mobile Overlay Backdrop */}
+      {isSidebarOpen && (
+        <div 
+          className={styles.mobileOverlay} 
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
       
       <div className={styles.mainWrapper}>
         <Navbar toggleSidebar={toggleSidebar} />
