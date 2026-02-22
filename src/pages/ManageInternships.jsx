@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { internshipService } from '../services/internshipService';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { db } from '../firebase/config';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import styles from '../styles/InternshipSystem.module.css';
 
 const ManageInternships = () => {
@@ -40,9 +42,6 @@ const ManageInternships = () => {
     try {
       // Create a function in internshipService or query here.
       // Easiest is to query 'applications' where internshipId == ...
-      const { collection, getDocs, query, where } = await import('firebase/firestore');
-      const { db } = await import('../firebase/config');
-      
       const q = query(collection(db, "applications"), where("internshipId", "==", internshipId));
       const snap = await getDocs(q);
       setApplicants(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
@@ -117,3 +116,5 @@ const ManageInternships = () => {
     </div>
   );
 };
+
+export default ManageInternships;

@@ -3,6 +3,8 @@ import { FaApple, FaTrophy, FaBuilding, FaBook, FaPlus, FaSearch, FaTimes } from
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuth } from '../context/AuthContext';
 import { schoolService } from '../services/schoolService';
+import { db } from '../firebase/config';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import styles from '../styles/SchoolDashboard.module.css';
 import "../styles/index.css";
 import { useState, useEffect } from 'react'; // Added useState and useEffect imports
@@ -24,16 +26,16 @@ const SchoolDashboard = () => {
     setLoading(true);
     try {
       // 1. Fetch Students specifically for this school
-      // Note: We need a new function in schoolService for this, or direct query
-      const { collection, getDocs, query, where } = await import('firebase/firestore');
-      const { db } = await import('../firebase/config');
+      const studentsQ = query(collection(db, "users"), where("role", "==", "student"), where("schoolId", "==", user.uid));
+      const studentsSnap = await getDocs(studentsQ);
+      setStudents(studentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       
-      const q = query(collection(db, "users"), where("role", "==", "student"));
-      const snap = await getDocs(q);
-      const studentData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setStudents(studentData);
-    } catch (error) {
-      console.error("Error loading students:", error);
+      // 2. Fetch Departments for this school
+      const deps = await schoolService.getDepartments(user.uid);
+      setDepartments(deps);
+      
+    } catch (err) {
+      console.error(err);
     }
     setLoading(false);
   };

@@ -4,6 +4,8 @@ import { FaBookmark, FaRegBookmark, FaSearch, FaCheckCircle, FaClock, FaBook } f
 import { useAuth } from '../context/AuthContext';
 import { internshipService } from '../services/internshipService';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { db } from '../firebase/config';
+import { doc, getDoc } from 'firebase/firestore';
 import styles from '../styles/Dashboard.module.css';
 
 const StudentDashboard = () => {
@@ -24,8 +26,6 @@ const StudentDashboard = () => {
     setLoading(true);
     try {
       // Load user profile specifically to get latest courses
-      const { doc, getDoc } = await import('firebase/firestore');
-      const { db } = await import('../firebase/config');
       const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
