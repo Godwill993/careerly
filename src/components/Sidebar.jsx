@@ -26,6 +26,7 @@ const Sidebar = ({ isOpen, toggleSidebar, onCloseMobile }) => {
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }}
               className={styles.logoText}
+              style={{ fontSize: '1.25rem' }}
             >
               Careerly
             </motion.span>

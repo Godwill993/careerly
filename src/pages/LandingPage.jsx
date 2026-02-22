@@ -146,6 +146,8 @@ const LandingPage = () => {
         .logo-text {
           font-size: 24px;
           font-weight: 900;
+          color: var(--slate-900);
+          margin-left: 8px;
         }
 
         .logo-accent {
@@ -430,8 +432,8 @@ const LandingPage = () => {
       {/* NAVIGATION */}
       <nav className="navbar">
         <div className="logo-container">
-          <div className="logo-box">CAREELY</div>
-         
+          <div className="logo-box">C</div>
+          <span className="logo-text">Careerly</span>
         </div>
         <div className="nav-links">
           <a href="#about" className="nav-link-item">About</a>
@@ -643,8 +645,8 @@ const LandingPage = () => {
       {/* FOOTER */}
       <footer className="footer">
         <div className="footer-logo-wrap">
-          <div className="logo-box logo-box-small">CAREERLY</div>
-          
+          <div className="logo-box logo-box-small">C</div>
+          <span className="logo-text" style={{ fontSize: '18px' }}>Careerly</span>
         </div>
         <p className="footer-copyright">
           © 2026 CAREERLY Talent Ecosystem. Elevating potential through intelligence.

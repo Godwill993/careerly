@@ -179,3 +179,30 @@
   height: 100px;
   resize: none;
 }
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .searchBox {
+    width: 100%;
+  }
+
+  .contentSection {
+    padding: 1rem;
+  }
+
+  .modalContent {
+    padding: 1.5rem;
+    max-width: 95%;
+  }
+}

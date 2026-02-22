@@ -138,3 +138,28 @@
 }
 
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  .tabs button {
+    padding: 0.75rem 1rem;
+    flex: 1;
+    text-align: center;
+  }
+
+  .searchBox {
+    width: 100%;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+}
