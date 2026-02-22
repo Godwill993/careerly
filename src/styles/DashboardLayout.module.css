@@ -9,8 +9,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow-y: auto; /* Allows main content to scroll while Sidebar stays fixed */
+  min-height: 100vh;
   transition: all var(--transition-standard);
 }
 

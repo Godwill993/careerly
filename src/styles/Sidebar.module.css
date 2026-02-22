@@ -19,6 +19,11 @@
     left: 0;
     height: 100vh;
     box-shadow: var(--shadow-md);
+    z-index: 1000;
+  }
+
+  .sidebar:not(.isOpen) {
+    transform: translateX(-100%);
   }
 }
 

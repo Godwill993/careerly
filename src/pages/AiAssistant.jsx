@@ -22,21 +22,21 @@ const AiAssistant = () => {
   }, [messages, isTyping]);
 
   const handleSend = async (text = input) => {
-    // Prevent empty sends OR multiple sends while waiting
     if (!text.trim() || isTyping) return;
     
     const userMsg = { role: 'user', content: text };
     
-    // 1. Use functional update to avoid race conditions
+    // Add User message immediately
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
 
     try {
       const aiRes = await aiService.generateResponse(text);
-      // 2. Add AI response to the list
+      // Wait for AI response, then append
       setMessages(prev => [...prev, { role: 'ai', content: aiRes }]);
     } catch (error) {
+      console.error(error);
       setMessages(prev => [...prev, { role: 'ai', content: "I encountered an error. Please check your connection." }]);
     } finally {
       setIsTyping(false);

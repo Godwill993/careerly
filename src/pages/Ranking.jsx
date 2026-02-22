@@ -268,30 +268,31 @@ const Internships = () => {
 
         @media (max-width: 1000px) {
           .rank-body { grid-template-columns: 1fr; }
-          
+          .rank-card-header { position: relative; }
+        }
+
+        @media (max-width: 768px) {
           .rank-card-header {
             flex-direction: column;
-            align-items: flex-start;
-            gap: 20px;
+            align-items: center;
+            text-align: center;
+            padding: 24px;
           }
-          
+
+          .profile-main {
+            flex-direction: column;
+            gap: 16px;
+          }
+
           .score-circle {
-            align-self: flex-end; /* Move score to right/bottom of header or keep it inline? Let's align right */
-            margin-top: -40px; /* Overlap or just adjust */
-            margin-top: 0;
-            width: 60px;
-            height: 60px;
+            margin-top: 16px;
           }
-          
-          .score-val { font-size: 16px; }
-          .score-label { font-size: 8px; }
-          
+
           .rank-number {
-             font-size: 24px;
-          }
-          
-          .rank-card-detailed {
-            border-radius: 16px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
           }
         }
       `}</style>

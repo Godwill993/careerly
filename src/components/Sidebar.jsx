@@ -14,9 +14,8 @@ const Sidebar = ({ isOpen, toggleSidebar, onCloseMobile }) => {
 
   return (
     <motion.aside 
-      className={styles.sidebar}
-      animate={{ width: isOpen ? '260px' : '80px' }}
-      // On mobile, if open, we want it full width or fixed width, simplified here by reliance on CSS class
+      className={`${styles.sidebar} ${isOpen ? styles.isOpen : ''}`}
+      animate={{ width: window.innerWidth > 768 ? (isOpen ? '260px' : '80px') : '260px' }}
     >
       <div className={styles.header}>
         <div className={styles.logoIcon}>C</div>

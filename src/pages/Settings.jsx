@@ -207,7 +207,15 @@ const Settings = () => {
         .dark .danger-zone { background: rgba(239, 68, 68, 0.1); border-color: #7f1d1d; }
 
         @media (max-width: 800px) {
+          .settings-wrapper { padding: 20px 16px; }
           .settings-container { grid-template-columns: 1fr; }
+          .settings-sidebar { margin-bottom: 24px; }
+          .settings-card { padding: 20px; }
+          .section-header h2 { font-size: 20px; }
+          
+          div[style*="grid-template-columns: 1fr 1fr"] {
+            grid-template-columns: 1fr !important;
+          }
         }
       `}</style>
 

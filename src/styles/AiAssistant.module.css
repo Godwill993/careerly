@@ -2,6 +2,7 @@
   height: calc(100vh - 120px);
   display: flex;
   justify-content: center;
+  padding: 1rem;
 }
 
 .chatWindow {
@@ -107,4 +108,33 @@
   height: 45px;
   border-radius: 50%;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .container {
+    height: calc(100vh - 80px); /* Adjust for smaller navbar */
+    padding: 0.5rem;
+  }
+
+  .messageArea {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .aiMsg, .userMsg {
+    max-width: 90%;
+  }
+
+  .quickActions {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .header {
+    padding: 1rem;
+  }
+
+  .footer {
+    padding: 1rem;
+  }
 }

@@ -407,6 +407,24 @@ const LandingPage = () => {
         .logo-box-small { width: 32px; height: 32px; font-size: 16px; }
         .footer-links { display: flex; justify-content: center; gap: 24px; margin-top: 24px; }
         .footer-link-btn { background: none; border: none; color: var(--slate-500); font-weight: 600; cursor: pointer; }
+
+        @media (max-width: 768px) {
+          .navbar { padding: 16px 20px; }
+          .nav-links { display: none; } /* Hide nav links on mobile landing for now or add toggle */
+          .hero { padding: 60px 20px 80px; }
+          .hero-title { font-size: 2.5rem; }
+          .hero-desc { font-size: 16px; margin-bottom: 32px; }
+          .cta-group { flex-direction: column; width: 100%; max-width: 300px; margin: 0 auto; }
+          .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+          .preview-container { margin-top: 40px; }
+          .trust-badge { right: 0; bottom: -10px; padding: 12px 16px; scale: 0.8; }
+          .solutions { padding: 60px 20px; }
+          .solutions-grid { grid-template-columns: 1fr; }
+          .how-it-works { padding: 60px 20px; }
+          .steps-container { flex-direction: column; gap: 30px; margin-top: 40px; }
+          .testimonial-grid { grid-template-columns: 1fr; }
+          .section-title { font-size: 28px; }
+        }
       `}</style>
 
       {/* NAVIGATION */}
@@ -629,7 +647,7 @@ const LandingPage = () => {
           
         </div>
         <p className="footer-copyright">
-          © 2026 CAREELY Talent Ecosystem. Elevating potential through intelligence.
+          © 2026 CAREERLY Talent Ecosystem. Elevating potential through intelligence.
         </p>
         <div className="footer-links">
           <button className="footer-link-btn">Privacy Policy</button>

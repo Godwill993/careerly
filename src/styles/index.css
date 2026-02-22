@@ -127,7 +127,7 @@ a, button, input {
   }
   
   .show-on-mobile {
-    display: block !important;
+    display: flex !important;
   }
   
   /* Adjust font sizes for mobile */
@@ -143,5 +143,18 @@ a, button, input {
 @media (min-width: 769px) {
   .show-on-mobile {
     display: none !important;
+  }
+}
+
+/* Grid helper for responsive layouts */
+.grid-responsive {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .grid-responsive {
+    grid-template-columns: 1fr;
   }
 }

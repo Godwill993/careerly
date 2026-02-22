@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { internshipService } from "../services/internshipService";
+import LoadingSpinner from "../components/LoadingSpinner";
+
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -18,75 +22,56 @@ import {
 } from "lucide-react";
 
 const Internships = () => {
-  const [selectedId, setSelectedId] = useState(1);
+  const [internships, setInternships] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [applying, setApplying] = useState(false);
+  const { user } = useAuth();
 
-  const internships = [
-    {
-      id: 1,
-      title: "Product Design Intern",
-      company: "InnovateTech",
-      location: "Buea, Cameroon (Hybrid)",
-      type: "Full-time",
-      stipend: "20,000 XAF/mo",
-      duration: "3 Months",
-      posted: "2 days ago",
-      description:
-        "Join our core design team to build the next generation of fintech products. You'll work directly with senior designers on high-impact user interfaces.",
-      requirements: [
-        "Proficiency in Figma",
-        "Strong Portfolio",
-        "Understanding of Design Systems",
-      ],
-      tags: ["UI/UX", "Product", "Fintech"],
-    },
-    {
-      id: 2,
-      title: "Software Engineering Intern",
-      company: "Tic foundation",
-      location: "yaounde, Cameroon (Remote)",
-      type: "Part-time",
-      stipend: "12000 XAF/mo",
-      duration: "3 Months",
-      posted: "5 hours ago",
-      description:
-        "Help us scale our distributed systems. You will be contributing to open-source tools and internal infrastructure using Go and Kubernetes.",
-      requirements: [
-        "Java/Go knowledge",
-        "Familiarity with Cloud",
-        "Problem Solving",
-      ],
-      tags: ["Go", "Cloud", "Kubernetes"],
-    },
-    {
-      id: 3,
-      title: "Marketing Strategy Intern",
-      company: "B&M branding",
-      location: "New York, NY",
-      type: "Full-time",
-      stipend: "12000 XAF/mo",
-      duration: "4 Months",
-      posted: "1 day ago",
-      description:
-        "Assist in the development of cross-platform marketing campaigns for luxury brands. Focus on social media engagement and analytics.",
-      requirements: ["Content Strategy", "Data Analytics", "Strong Writing"],
-      tags: ["Marketing", "Social", "Brand"],
-    },
-    {
-      id: 4,
-      title: "AI Research Assistant",
-      company: "NeuralLabs",
-      location: "Douala, Cameroon (On-site)",
-      type: "Full-time",
-      stipend: "18000 XAF/mo",
-      duration: "6 Months",
-      posted: "3 days ago",
-      description:
-        "Support our research scientists in training large-scale language models. Experience with PyTorch or TensorFlow is highly preferred.",
-      requirements: ["Python expert", "Math background", "Machine Learning"],
-      tags: ["AI", "Research", "Python"],
-    },
-  ];
+  useEffect(() => {
+    loadInternships();
+  }, []);
+
+  const loadInternships = async () => {
+    setLoading(true);
+    try {
+      const data = await internshipService.getAllInternships();
+      setInternships(data);
+      if (data.length > 0) setSelectedId(data[0].id);
+    } catch (error) {
+      console.error("Error loading internships:", error);
+    }
+    setLoading(false);
+  };
+
+  const handleApply = async () => {
+    if (!user) {
+      alert("Please log in to apply");
+      return;
+    }
+    if (!selectedId) return;
+
+    setApplying(true);
+    try {
+      await internshipService.applyToInternship(user.uid, selectedId, {
+        studentName: user.displayName || user.email || "Student",
+        studentEmail: user.email,
+        companyId: selectedJob?.companyId,
+        internshipTitle: selectedJob?.title,
+      });
+      alert("Application submitted successfully!");
+    } catch (error) {
+      console.error("Failed to apply:", error);
+      alert("Failed to submit application. Please make sure you are registered as a Student.");
+    }
+    setApplying(false);
+  };
+
+  const filteredJobs = internships.filter(job => 
+    job.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    job.company?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const selectedJob = internships.find((job) => job.id === selectedId);
 
@@ -266,7 +251,33 @@ const Internships = () => {
 
         @media (max-width: 900px) {
           .main-content { grid-template-columns: 1fr; }
-          .detail-view { display: none; }
+          .detail-view { 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+            border-radius: 0;
+            overflow-y: auto;
+            display: none; /* Controlled by state or logic */
+          }
+          
+          .detail-view.mobile-active {
+            display: block;
+          }
+
+          .close-detail {
+            display: block;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--color-surface);
+            border-radius: 50%;
+            padding: 8px;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+          }
           
           .search-bar-wrap {
             flex-direction: column;
@@ -291,6 +302,8 @@ const Internships = () => {
             padding: 20px 16px;
           }
         }
+
+        .close-detail { display: none; }
       `}</style>
 
       <div className="search-container">
@@ -324,7 +337,12 @@ const Internships = () => {
           animate="visible"
           className="feed-column"
         >
-          {internships.map((job) => (
+          {loading ? (
+            <LoadingSpinner message="Loading awesome opportunities..." fullHeight />
+          ) : filteredJobs.length === 0 ? (
+            <p style={{ padding: '20px', textAlign: 'center' }}>No internships found.</p>
+          ) : (
+            filteredJobs.map((job) => (
             <motion.div
               key={job.id}
               variants={itemVariants}
@@ -360,7 +378,8 @@ const Internships = () => {
                 <div className="meta-item">{job.posted}</div>
               </div>
             </motion.div>
-          ))}
+            ))
+          )}
         </motion.div>
 
         {/* DETAIL VIEW */}
@@ -371,8 +390,11 @@ const Internships = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="detail-view"
+            className={`detail-view ${selectedId ? 'mobile-active' : ''}`}
           >
+            <div className="close-detail" onClick={() => setSelectedId(null)}>
+              <X size={24} />
+            </div>
             <div className="detail-header">
               <div>
                 <div
@@ -409,18 +431,25 @@ const Internships = () => {
                 <button className="filter-btn" style={{ padding: "14px" }}>
                   <Bookmark size={20} />
                 </button>
-                <button className="apply-btn">
-                  Apply Now <ArrowUpRight size={20} />
+                <button 
+                  className="apply-btn" 
+                  onClick={handleApply}
+                  disabled={applying}
+                  style={{ opacity: applying ? 0.7 : 1 }}
+                >
+                  {applying ? "Submitting..." : (
+                    <>Apply Now <ArrowUpRight size={20} /></>
+                  )}
                 </button>
               </div>
             </div>
 
             <div className="tag-row">
-              {selectedJob.tags.map((tag) => (
+              {selectedJob?.tags ? selectedJob.tags.map((tag) => (
                 <span key={tag} className="tag">
                   #{tag}
                 </span>
-              ))}
+              )) : null}
             </div>
 
             <span className="section-label">Role Overview</span>
@@ -431,12 +460,12 @@ const Internships = () => {
                 fontSize: "16px",
               }}
             >
-              {selectedJob.description}
+              {selectedJob?.description}
             </p>
 
             <span className="section-label">Key Requirements</span>
             <ul className="req-list">
-              {selectedJob.requirements.map((req, i) => (
+              {selectedJob?.requirements ? selectedJob.requirements.map((req, i) => (
                 <li key={i} className="req-item">
                   <CheckCircle2
                     size={18}
@@ -444,7 +473,9 @@ const Internships = () => {
                   />
                   {req}
                 </li>
-              ))}
+              )) : (
+                <p>No specific requirements provided.</p>
+              )}
             </ul>
 
             <div

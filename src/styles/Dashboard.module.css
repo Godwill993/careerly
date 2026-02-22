@@ -139,3 +139,22 @@
 @media (max-width: 1024px) {
   .mainGrid { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchBar {
+    max-width: none;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .internshipGrid {
+    grid-template-columns: 1fr;
+  }
+}

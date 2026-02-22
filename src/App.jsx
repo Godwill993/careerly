@@ -10,10 +10,11 @@ import StudentDashboard from './pages/StudentDashboard';
 import SchoolDashboard from './pages/SchoolDashboard';
 import AiAssistant from './pages/AiAssistant';
 import CompanyDashboard from './pages/CompanyDashboard';
-import LandingPage from './pages/LandinPage';
+import LandingPage from './pages/LandingPage';
 import Internships from './pages/Internship';
 import Ranking from './pages/Ranking';
 import Settings from './pages/Settings';
+import ManageInternships from './pages/ManageInternships';
 
 // Placeholder for missing pages
 const Placeholder = ({ name }) => (
@@ -96,6 +97,18 @@ function AppContent() {
                 <div className="loading-container"><div className="spinner"></div></div>
               ) : user.role === 'company' ? (
                 <CompanyDashboard name="Company Dashboard" />
+              ) : (
+                <Navigate to="/forbidden" />
+              )
+            } 
+          />
+          <Route 
+            path="/company/postings" 
+            element={
+              !user?.role ? (
+                <div className="loading-container"><div className="spinner"></div></div>
+              ) : user.role === 'company' ? (
+                <ManageInternships />
               ) : (
                 <Navigate to="/forbidden" />
               )
