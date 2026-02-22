@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Auth.module.css';
 
 const Register = () => {
-  const [formData, setFormData] = useState({ email: '', password: '', role: 'student' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'student' });
   const navigate = useNavigate();
 
   const [schools, setSchools] = useState([]);
@@ -36,6 +36,7 @@ const Register = () => {
       const res = await authService.register(formData.email, formData.password);
       
       const userData = {
+        displayName: formData.name, // generic name field used for student/company/school
         email: formData.email,
         role: formData.role
       };
@@ -60,6 +61,12 @@ const Register = () => {
     <div className={styles.authContainer}>
       <form className={styles.authCard} onSubmit={handleRegister}>
         <h2>Create Account</h2>
+        <input 
+          type="text" 
+          placeholder={formData.role === 'student' ? "Full Name" : formData.role === 'school' ? "School Name" : "Company Name"} 
+          onChange={(e) => setFormData({...formData, name: e.target.value})} 
+          required 
+        />
         <input type="email" placeholder="Email" onChange={(e) => setFormData({...formData, email: e.target.value})} required />
         <input type="password" placeholder="Password" onChange={(e) => setFormData({...formData, password: e.target.value})} required />
         

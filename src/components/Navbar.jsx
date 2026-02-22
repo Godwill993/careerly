@@ -35,7 +35,7 @@ const Navbar = ({ toggleSidebar }) => {
 
         <div className={styles.profileSection}>
           <div className={styles.userInfo}>
-            <span className={styles.userName}>{user?.email?.split('@')[0] || 'User'}</span>
+            <span className={styles.userName}>{user?.displayName || user?.email?.split('@')[0] || 'User'}</span>
             <span className={styles.userRole}>{user?.role || 'Guest'}</span>
           </div>
           <FaUserCircle className={styles.profileAvatar} />
