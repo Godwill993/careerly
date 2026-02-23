@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { authService } from '../services/authService';
 import { userService } from '../services/userService';
 import { schoolService } from '../services/schoolService';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import styles from '../styles/Auth.module.css';
 
 const Register = () => {
@@ -106,6 +106,10 @@ const Register = () => {
         )}
         
         <button type="submit" className="btn btn-primary">Register</button>
+        
+        <p className={styles.switch}>
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
       </form>
     </div>
   );
