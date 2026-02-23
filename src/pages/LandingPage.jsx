@@ -568,37 +568,46 @@ const LandingPage = () => {
           viewport={{ once: true, margin: "-100px" }}
           className="solutions-grid"
         >
-          {userTypes.map((type, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              whileHover={{ y: -12, boxShadow: "0 20px 40px -15px rgba(0,0,0,0.1)" }}
-              className="card"
-            >
-              <div className={`card-accent ${type.colorClass}`} />
-              <div className="icon-box">
-                {type.icon}
-              </div>
-              <h3 className="card-title">{type.title}</h3>
-              <p className="card-desc">{type.description}</p>
-              <ul className="feature-list">
-                {type.features.map((feature, idx) => (
-                  <li key={idx} className="feature-item">
-                    <CheckCircle2 size={18} className="feature-check" />
-                    <span className="feature-text">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <motion.button
-                variants={interactionVariants}
-                whileHover="hover"
-                whileTap="tap"
-                className={`card-btn ${type.colorClass} ${type.shadowClass}`}
+          {userTypes.map((type, index) => {
+            // Determine the role parameter based on the title
+            let roleParam = 'student';
+            if (type.title.toLowerCase().includes('school')) roleParam = 'school';
+            if (type.title.toLowerCase().includes('company')) roleParam = 'company';
+
+            return (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover={{ y: -12, boxShadow: "0 20px 40px -15px rgba(0,0,0,0.1)" }}
+                className="card"
               >
-                {type.buttonText}
-              </motion.button>
-            </motion.div>
-          ))}
+                <div className={`card-accent ${type.colorClass}`} />
+                <div className="icon-box">
+                  {type.icon}
+                </div>
+                <h3 className="card-title">{type.title}</h3>
+                <p className="card-desc">{type.description}</p>
+                <ul className="feature-list">
+                  {type.features.map((feature, idx) => (
+                    <li key={idx} className="feature-item">
+                      <CheckCircle2 size={18} className="feature-check" />
+                      <span className="feature-text">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link to={`/register?role=${roleParam}`} style={{ textDecoration: 'none' }}>
+                  <motion.button
+                    variants={interactionVariants}
+                    whileHover="hover"
+                    whileTap="tap"
+                    className={`card-btn ${type.colorClass} ${type.shadowClass}`}
+                  >
+                    {type.buttonText}
+                  </motion.button>
+                </Link>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </section>
 

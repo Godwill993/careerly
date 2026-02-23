@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { authService } from '../services/authService';
 import { userService } from '../services/userService';
 import { schoolService } from '../services/schoolService';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from '../styles/Auth.module.css';
 
 const Register = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'student' });
+  const [searchParams] = useSearchParams();
+  const initialRole = searchParams.get('role') || 'student';
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: initialRole });
   const navigate = useNavigate();
 
   const [schools, setSchools] = useState([]);
@@ -70,7 +72,7 @@ const Register = () => {
         <input type="email" placeholder="Email" onChange={(e) => setFormData({...formData, email: e.target.value})} required />
         <input type="password" placeholder="Password" onChange={(e) => setFormData({...formData, password: e.target.value})} required />
         
-        <select className={styles.select} onChange={(e) => setFormData({...formData, role: e.target.value})} style={{ marginBottom: formData.role === 'student' ? '10px' : '20px' }}>
+        <select className={styles.select} value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})} style={{ marginBottom: formData.role === 'student' ? '10px' : '20px' }}>
           <option value="student">Student</option>
           <option value="school">School</option>
           <option value="company">Company</option>
