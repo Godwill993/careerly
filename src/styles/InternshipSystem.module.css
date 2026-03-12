@@ -1,30 +1,72 @@
-.container { padding: 1rem; }
-.list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+.container { 
+  padding: 1.5rem; 
+  background: var(--color-bg);
+  min-height: 100%;
+}
+
+.list { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 1.25rem; 
+  margin-top: 2rem; 
+}
 
 .row {
   background: var(--color-surface);
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   border-radius: var(--border-radius);
   border: 1px solid var(--color-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
-.actions { display: flex; gap: 1rem; align-items: center; }
+.row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.actions { 
+  display: flex; 
+  gap: 1.25rem; 
+  align-items: center; 
+}
 
 .actions select {
-  padding: 0.5rem;
-  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
   border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.95rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.actions select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .actions button {
   color: #ef4444;
-  background: none;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
   font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.actions button:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+  transform: scale(1.02);
 }
 
 /* Mobile Adjustments */
@@ -32,18 +74,20 @@
   .row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 1.5rem;
+    padding: 1.25rem;
   }
 
   .actions {
     flex-direction: column;
     width: 100%;
     align-items: stretch;
+    gap: 0.75rem;
   }
 
   .actions select, .actions button {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.8rem;
     margin: 0 !important; /* Override inline styles from JS if any */
   }
 }

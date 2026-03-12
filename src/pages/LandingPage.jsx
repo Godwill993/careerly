@@ -1,674 +1,526 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { 
-  GraduationCap, 
-  Building2, 
-  School, 
-  ArrowRight, 
-  CheckCircle2, 
-  ShieldCheck, 
-  Globe,
+import { useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  GraduationCap,
+  Building2,
+  School,
+  ArrowRight,
+  CheckCircle2,
+  ShieldCheck,
   Zap,
   Users,
   BarChart3,
-  Star,
-  Quote
+  Quote,
+  Menu,
+  X,
+  Sparkles,
 } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import styles from '../styles/LandingPage.module.css';
 
-/**
- * ANIMATION VARIANTS
- */
-const pageVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+// ─── Animation Variants (module-scope to prevent recreation on render) ───────
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 90, damping: 20 } },
 };
 
-const containerVariants = {
+const stagger = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.15, delayChildren: 0.2 }
-  }
+    transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+  },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
+const heroVariant = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
 };
 
-const interactionVariants = {
-  hover: { scale: 1.05, transition: { duration: 0.2 } },
-  tap: { scale: 0.95 }
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.92 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: 'easeOut', delay: 0.3 } },
 };
 
-const LandingPage = () => {
-  const userTypes = [
-    {
-      title: "For Students",
-      icon: <GraduationCap size={40} className="icon-blue" />,
-      description: "Launch your career with AI-matched internships and personalized growth roadmaps.",
-      features: ["AI Resume Builder", "Skill Gap Analysis", "Verified Internship Access"],
-      buttonText: "Join as Student",
-      colorClass: "bg-blue",
-      shadowClass: "shadow-blue"
-    },
-    {
-      title: "For Schools",
-      icon: <School size={40} className="icon-yellow" />,
-      description: "Empower your students and track placement metrics with powerful administrative tools.",
-      features: ["Student Analytics", "Partner Networking", "Program Management"],
-      buttonText: "Register Institution",
-      colorClass: "bg-yellow",
-      shadowClass: "shadow-yellow"
-    },
-    {
-      title: "For Companies",
-      icon: <Building2 size={40} className="icon-indigo" />,
-      description: "Access a verified pipeline of top-tier talent filtered by real-world performance.",
-      features: ["Smart Recruitment", "Brand Management", "Performance Tracking"],
-      buttonText: "Hire Top Talent",
-      colorClass: "bg-indigo",
-      shadowClass: "shadow-indigo"
-    }
-  ];
+const badgeSlide = {
+  hidden: { x: 24, opacity: 0 },
+  visible: { x: 0, opacity: 1, transition: { delay: 0.9, duration: 0.5 } },
+};
 
-  const steps = [
-    { title: "Profile Creation", desc: "AI scans your background to create a dynamic talent identity.", icon: <Users /> },
-    { title: "Smart Matching", desc: "Our neural engine connects you with the perfect professional fit.", icon: <Zap /> },
-    { title: "Verified Success", desc: "Data-driven placement results for long-term career growth.", icon: <BarChart3 /> }
-  ];
+const press = { tap: { scale: 0.96 }, hover: { scale: 1.03 } };
 
-  const testimonials = [
-    { name: "Sarah Chen", role: "CS Student @ Stanford", text: "BlueGold found me an internship that perfectly matched my niche skills in AI ethics." },
-    { name: "Marcus Thorne", role: "Talent Lead @ TechFlow", text: "The quality of candidates is unmatched. The verification layer saves us weeks of screening." }
-  ];
+// ─── Static Data (module-scope to prevent recreation on render) ───────────────
+
+const USER_TYPES = [
+  {
+    id: 'student',
+    title: 'For Students',
+    icon: GraduationCap,
+    description: 'Launch your career with AI-matched internships and personalized growth roadmaps.',
+    features: ['AI Resume Builder', 'Skill Gap Analysis', 'Verified Internship Access'],
+    buttonText: 'Join as Student',
+    colorMod: styles.cardBlue,
+    roleParam: 'student',
+  },
+  {
+    id: 'school',
+    title: 'For Schools',
+    icon: School,
+    description: 'Empower your students and track placement metrics with powerful administrative tools.',
+    features: ['Student Analytics', 'Partner Networking', 'Program Management'],
+    buttonText: 'Register Institution',
+    colorMod: styles.cardYellow,
+    roleParam: 'school',
+  },
+  {
+    id: 'company',
+    title: 'For Companies',
+    icon: Building2,
+    description: 'Access a verified pipeline of top-tier talent filtered by real-world performance.',
+    features: ['Smart Recruitment', 'Brand Management', 'Performance Tracking'],
+    buttonText: 'Hire Top Talent',
+    colorMod: styles.cardIndigo,
+    roleParam: 'company',
+  },
+];
+
+const STEPS = [
+  {
+    id: 'profile',
+    title: 'Profile Creation',
+    desc: 'AI scans your background to create a dynamic talent identity.',
+    Icon: Users,
+  },
+  {
+    id: 'matching',
+    title: 'Smart Matching',
+    desc: 'Our neural engine connects you with the perfect professional fit.',
+    Icon: Zap,
+  },
+  {
+    id: 'success',
+    title: 'Verified Success',
+    desc: 'Data-driven placement results for long-term career growth.',
+    Icon: BarChart3,
+  },
+];
+
+const TESTIMONIALS = [
+  {
+    id: 'abena',
+    name: 'Abena Marie',
+    role: 'CS Student @ University of Yaoundé I',
+    initials: 'AM',
+    text: 'Careerly found me an internship that perfectly matched my niche skills in AI ethics. The matching felt truly intelligent.',
+  },
+  {
+    id: 'mbida',
+    name: 'Mbida Jean-Paul',
+    role: 'Talent Lead @ Orange Cameroon',
+    initials: 'MJ',
+    text: 'The quality of candidates is unmatched. The verification layer saves us weeks of screening time every quarter.',
+  },
+];
+
+const NAV_LINKS = [
+  { href: '#how', label: 'How it Works' },
+  { href: '#solutions', label: 'Solutions' },
+  { href: '#testimonials', label: 'Success Stories' },
+];
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function NavBar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const toggleMenu = useCallback(() => setMenuOpen((prev) => !prev), []);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   return (
-    <div className="landing-wrapper">
-      <style>{`
-        :root {
-          --blue-600: #2563eb;
-          --blue-50: #eff6ff;
-          --yellow-500: #eab308;
-          --indigo-600: #4f46e5;
-          --slate-50: #f8fafc;
-          --slate-100: #f1f5f9;
-          --slate-200: #e2e8f0;
-          --slate-400: #94a3b8;
-          --slate-500: #64748b;
-          --slate-600: #475569;
-          --slate-900: #0f172a;
-          --white: #ffffff;
-        }
+    <header className={styles.header}>
+      <nav className={styles.navbar} aria-label="Main navigation">
+        <Link to="/" className={styles.brand} aria-label="Careerly home">
+          <div className={styles.brandIcon} aria-hidden="true">C</div>
+          <span className={styles.brandName}>
+            Careerly
+          </span>
+        </Link>
 
-        .landing-wrapper {
-          min-height: 100vh;
-          background-color: var(--slate-50);
-          color: var(--slate-900);
-          font-family: system-ui, -apple-system, sans-serif;
-          overflow-x: hidden;
-        }
+        {/* Desktop nav */}
+        <ul className={styles.navLinks} role="list">
+          {NAV_LINKS.map((link) => (
+            <li key={link.href}>
+              <a href={link.href} className={styles.navLink}>
+                {link.label}
+              </a>
+            </li>
+          ))}
+          <li>
+            <Link to="/register" className={styles.navCta}>
+              Get Started
+            </Link>
+          </li>
+        </ul>
 
-        .navbar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 24px 32px;
-          max-width: 1200px;
-          margin: 0 auto;
-          position: sticky;
-          top: 0;
-          background: rgba(248, 250, 252, 0.8);
-          backdrop-filter: blur(10px);
-          z-index: 100;
-        }
-
-        .logo-container {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .logo-box {
-          width: 40px;
-          height: 40px;
-          background-color: var(--blue-600);
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-weight: bold;
-          font-size: 20px;
-        }
-
-        .logo-text {
-          font-size: 24px;
-          font-weight: 900;
-          color: var(--slate-900);
-          margin-left: 8px;
-        }
-
-        .logo-accent {
-          color: var(--blue-600);
-        }
-
-        .nav-links {
-          display: flex;
-          gap: 32px;
-          align-items: center;
-        }
-
-        .nav-link-item {
-          text-decoration: none;
-          color: var(--slate-600);
-          font-weight: 600;
-          transition: color 0.2s;
-        }
-        
-        .nav-link-item:hover { color: var(--blue-600); }
-
-        .nav-btn {
-          background-color: var(--slate-900);
-          color: white;
-          padding: 10px 24px;
-          border-radius: 9999px;
-          border: none;
-          cursor: pointer;
-          font-weight: bold;
-        }
-
-        .hero {
-          position: relative;
-          padding: 80px 24px 120px;
-          text-align: center;
-        }
-
-        .blob {
-          position: absolute;
-          width: 400px;
-          height: 400px;
-          border-radius: 50%;
-          filter: blur(80px);
-          opacity: 0.4;
-          z-index: 0;
-        }
-
-        .blob-1 { top: -5%; right: -5%; background-color: #dbeafe; }
-        .blob-2 { bottom: 5%; left: -5%; background-color: #fef9c3; }
-
-        .hero-content {
-          max-width: 1200px;
-          margin: 0 auto;
-          position: relative;
-          z-index: 10;
-        }
-
-        .badge {
-          display: inline-block;
-          padding: 6px 16px;
-          margin-bottom: 24px;
-          font-size: 14px;
-          font-weight: 700;
-          color: var(--blue-600);
-          background-color: var(--blue-50);
-          border-radius: 9999px;
-        }
-
-        .hero-title {
-          font-size: clamp(2.5rem, 8vw, 4.5rem);
-          font-weight: 900;
-          margin-bottom: 24px;
-          line-height: 1.1;
-        }
-
-        .gradient-text {
-          background: linear-gradient(to right, var(--blue-600), var(--indigo-600));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        .hero-desc {
-          max-width: 680px;
-          margin: 0 auto 48px;
-          font-size: 20px;
-          color: var(--slate-600);
-          line-height: 1.6;
-        }
-
-        .cta-group {
-          display: flex;
-          gap: 16px;
-          justify-content: center;
-        }
-
-        .btn-primary {
-          padding: 16px 32px;
-          background-color: var(--blue-600);
-          color: white;
-          border-radius: 16px;
-          font-weight: 800;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          border: none;
-          cursor: pointer;
-          box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-secondary {
-          padding: 16px 32px;
-          background-color: white;
-          color: var(--slate-700);
-          border: 1px solid var(--slate-200);
-          border-radius: 16px;
-          font-weight: 800;
-          cursor: pointer;
-        }
-
-        .preview-container {
-          margin-top: 80px;
-          position: relative;
-          max-width: 900px;
-          margin-inline: auto;
-        }
-
-        .preview-box {
-          background: white;
-          padding: 12px;
-          border-radius: 24px;
-          border: 1px solid var(--slate-200);
-          box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1);
-        }
-
-        .preview-inner {
-          aspect-ratio: 16/9;
-          background: var(--slate-50);
-          border: 2px dashed var(--slate-200);
-          border-radius: 16px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .preview-globe { color: var(--blue-600); opacity: 0.5; }
-
-        .trust-badge {
-          position: absolute;
-          bottom: -20px;
-          right: -20px;
-          background: white;
-          padding: 16px 24px;
-          border-radius: 20px;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-        }
-
-        .icon-success { color: #16a34a; }
-
-        .solutions { padding: 100px 24px; background: white; }
-        .solutions-header { text-align: center; margin-bottom: 60px; }
-        .section-title { font-size: 36px; font-weight: 900; margin-bottom: 16px; }
-        .section-subtitle { color: var(--slate-500); font-size: 18px; max-width: 600px; margin: 0 auto; }
-
-        .solutions-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 32px;
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-
-        .card {
-          background: var(--slate-50);
-          padding: 40px;
-          border-radius: 32px;
-          position: relative;
-          overflow: hidden;
-          border: 1px solid var(--slate-100);
-          transition: transform 0.3s;
-        }
-
-        .card-accent {
-          position: absolute;
-          top: 0; right: 0; width: 100px; height: 100px;
-          border-bottom-left-radius: 100%;
-          opacity: 0.1;
-        }
-
-        .icon-box { margin-bottom: 24px; }
-        .icon-blue { color: var(--blue-600); }
-        .icon-yellow { color: var(--yellow-500); }
-        .icon-indigo { color: var(--indigo-600); }
-
-        .feature-list { list-style: none; padding: 0; margin-bottom: 32px; }
-        .feature-item { display: flex; gap: 8px; margin-bottom: 12px; font-weight: 600; }
-        .feature-check { color: var(--blue-600); }
-
-        .card-btn {
-          width: 100%;
-          padding: 14px;
-          border-radius: 12px;
-          border: none;
-          color: white;
-          font-weight: 800;
-          cursor: pointer;
-        }
-
-        .bg-blue { background: var(--blue-600); }
-        .bg-yellow { background: var(--yellow-500); }
-        .bg-indigo { background: var(--indigo-600); }
-
-        /* HOW IT WORKS SECTION */
-        .how-it-works { padding: 100px 24px; background: var(--slate-50); }
-        .steps-container { 
-          display: flex; 
-          justify-content: space-between; 
-          max-width: 1100px; 
-          margin: 60px auto 0; 
-          gap: 40px;
-          flex-wrap: wrap;
-        }
-        .step-item { flex: 1; min-width: 250px; text-align: center; position: relative; }
-        .step-icon-wrap {
-          width: 80px; height: 80px;
-          background: white;
-          border-radius: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto 24px;
-          color: var(--blue-600);
-          box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);
-        }
-        .step-title { font-weight: 800; margin-bottom: 8px; }
-        .step-desc { color: var(--slate-500); font-size: 15px; line-height: 1.5; }
-
-        /* TESTIMONIALS */
-        .testimonials { padding: 100px 24px; background: var(--white); }
-        .testimonial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 1000px; margin: 60px auto 0; }
-        .testimonial-card {
-          padding: 40px;
-          background: var(--slate-50);
-          border-radius: 24px;
-          position: relative;
-        }
-        .quote-icon { color: var(--blue-600); opacity: 0.2; position: absolute; top: 20px; right: 20px; }
-        .test-text { font-size: 18px; font-weight: 500; color: var(--slate-700); margin-bottom: 24px; line-height: 1.6; font-style: italic; }
-        .test-author { display: flex; align-items: center; gap: 12px; }
-        .test-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--slate-200); }
-        .test-name { font-weight: 800; font-size: 16px; }
-        .test-role { color: var(--slate-500); font-size: 14px; }
-
-        .footer { padding: 60px 24px; text-align: center; border-top: 1px solid var(--slate-100); background: white; }
-        .footer-logo-wrap { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; }
-        .logo-box-small { width: 32px; height: 32px; font-size: 16px; }
-        .footer-links { display: flex; justify-content: center; gap: 24px; margin-top: 24px; }
-        .footer-link-btn { background: none; border: none; color: var(--slate-500); font-weight: 600; cursor: pointer; }
-
-        @media (max-width: 768px) {
-          .navbar { padding: 16px 20px; }
-          .nav-links { display: none; } /* Hide nav links on mobile landing for now or add toggle */
-          .hero { padding: 60px 20px 80px; }
-          .hero-title { font-size: 2.5rem; }
-          .hero-desc { font-size: 16px; margin-bottom: 32px; }
-          .cta-group { flex-direction: column; width: 100%; max-width: 300px; margin: 0 auto; }
-          .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
-          .preview-container { margin-top: 40px; }
-          .trust-badge { right: 0; bottom: -10px; padding: 12px 16px; scale: 0.8; }
-          .solutions { padding: 60px 20px; }
-          .solutions-grid { grid-template-columns: 1fr; }
-          .how-it-works { padding: 60px 20px; }
-          .steps-container { flex-direction: column; gap: 30px; margin-top: 40px; }
-          .testimonial-grid { grid-template-columns: 1fr; }
-          .section-title { font-size: 28px; }
-        }
-      `}</style>
-
-      {/* NAVIGATION */}
-      <nav className="navbar">
-        <div className="logo-container">
-          <div className="logo-box">C</div>
-          <span className="logo-text">Careerly</span>
-        </div>
-        <div className="nav-links">
-          <a href="#about" className="nav-link-item">About</a>
-          <a href="#how" className="nav-link-item">How it Works</a>
-          <a href="#solutions" className="nav-link-item">Solutions</a>
-          <Link to="/register">
-                 <motion.button 
-            variants={interactionVariants}
-            whileHover="hover"
-            whileTap="tap"
-            className="nav-btn"
-          >
-            Get Started
-          </motion.button>
-          </Link>
-       
-        </div>
+        {/* Mobile hamburger */}
+        <button
+          className={styles.hamburger}
+          onClick={toggleMenu}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        >
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
       </nav>
 
-      {/* HERO SECTION */}
-      <section className="hero">
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="blob blob-1"
-        />
-        <motion.div 
-          animate={{ scale: [1, 1.3, 1], rotate: [0, -90, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="blob blob-2"
-        />
-
-        <div className="hero-content">
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {menuOpen && (
           <motion.div
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
+            id="mobile-menu"
+            className={styles.mobileMenu}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            role="dialog"
+            aria-label="Mobile navigation"
           >
-            <span className="badge">The Future of Talent Placement</span>
-            <h1 className="hero-title">
-              Bridging the Gap Between <br />
-              <span className="gradient-text">Ambition and Opportunity</span>
-            </h1>
-            <p className="hero-desc">
-              BlueGold is the intelligent ecosystem connecting students, educational institutions, and global companies through AI-driven career matching.
-            </p>
-            <div className="cta-group">
-         
-              <Link to="/register">
-                   <motion.button 
-                variants={interactionVariants}
-                whileHover="hover"
-                whileTap="tap"
-                className="btn-primary"
-              >
-                Get Started Now <ArrowRight size={20} className="btn-icon" />
-              </motion.button>  
-              </Link>
-              <button className="btn-secondary">Watch Demo</button>
-            </div>
-          </motion.div>
-
-          {/* INTERACTIVE PREVIEW ELEMENT */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 1 }}
-            className="preview-container"
-          >
-            <div className="preview-box">
-              <div className="preview-inner">
-                <Globe size={64} className="preview-globe" />
-                <p className="preview-title">Interactive Platform Preview</p>
-                <p className="preview-subtitle">Real-time talent dashboard visualization</p>
-              </div>
-            </div>
-            <motion.div 
-              initial={{ x: 20, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="trust-badge"
-            >
-              <div className="trust-icon-wrapper">
-                <ShieldCheck size={24} className="icon-success" />
-              </div>
-              <div className="trust-text">
-                <p className="trust-label">Trust Signal</p>
-                <p className="trust-value">12k+ Placements</p>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS SECTION */}
-      <section id="how" className="how-it-works">
-        <div className="solutions-header">
-          <h2 className="section-title">The Three-Step Synergy</h2>
-          <p className="section-subtitle">A streamlined pipeline designed to get you from start to hired in record time.</p>
-        </div>
-        <motion.div 
-          className="steps-container"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {steps.map((step, i) => (
-            <motion.div key={i} variants={itemVariants} className="step-item">
-              <div className="step-icon-wrap">
-                {step.icon}
-              </div>
-              <h3 className="step-title">{step.title}</h3>
-              <p className="step-desc">{step.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
-
-      {/* SOLUTIONS / PERSONA SECTION */}
-      <section id="solutions" className="solutions">
-        <div className="solutions-header">
-          <h2 className="section-title">Choose Your Path</h2>
-          <p className="section-subtitle">Select a profile to begin your journey with BlueGold's specialized talent ecosystem.</p>
-        </div>
-
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="solutions-grid"
-        >
-          {userTypes.map((type, index) => {
-            // Determine the role parameter based on the title
-            let roleParam = 'student';
-            if (type.title.toLowerCase().includes('school')) roleParam = 'school';
-            if (type.title.toLowerCase().includes('company')) roleParam = 'company';
-
-            return (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                whileHover={{ y: -12, boxShadow: "0 20px 40px -15px rgba(0,0,0,0.1)" }}
-                className="card"
-              >
-                <div className={`card-accent ${type.colorClass}`} />
-                <div className="icon-box">
-                  {type.icon}
-                </div>
-                <h3 className="card-title">{type.title}</h3>
-                <p className="card-desc">{type.description}</p>
-                <ul className="feature-list">
-                  {type.features.map((feature, idx) => (
-                    <li key={idx} className="feature-item">
-                      <CheckCircle2 size={18} className="feature-check" />
-                      <span className="feature-text">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link to={`/register?role=${roleParam}`} style={{ textDecoration: 'none' }}>
-                  <motion.button
-                    variants={interactionVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                    className={`card-btn ${type.colorClass} ${type.shadowClass}`}
-                  >
-                    {type.buttonText}
-                  </motion.button>
+            <ul role="list">
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className={styles.mobileNavLink} onClick={closeMenu}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <Link to="/register" className={styles.mobileNavCta} onClick={closeMenu}>
+                  Get Started →
                 </Link>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-      </section>
+              </li>
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+}
 
-      {/* TESTIMONIALS SECTION */}
-      <section className="testimonials">
-        <div className="solutions-header">
-          <h2 className="section-title">Voices of Success</h2>
-          <p className="section-subtitle">Join thousands of students and recruiters already thriving on BlueGold.</p>
-        </div>
-        <div className="testimonial-grid">
-          {testimonials.map((t, i) => (
-            <motion.div 
-              key={i} 
-              initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="testimonial-card"
-            >
-              <Quote className="quote-icon" size={40} />
-              <p className="test-text">"{t.text}"</p>
-              <div className="test-author">
-                <div className="test-avatar" />
-                <div>
-                  <p className="test-name">{t.name}</p>
-                  <p className="test-role">{t.role}</p>
-                </div>
-              </div>
+function HeroSection() {
+  return (
+    <section className={styles.hero} aria-labelledby="hero-heading">
+      {/* Decorative blobs */}
+      <motion.div
+        className={`${styles.blob} ${styles.blob1}`}
+        animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+        aria-hidden="true"
+      />
+      <motion.div
+        className={`${styles.blob} ${styles.blob2}`}
+        animate={{ scale: [1, 1.3, 1], rotate: [0, -90, 0] }}
+        transition={{ duration: 17, repeat: Infinity, ease: 'linear' }}
+        aria-hidden="true"
+      />
+
+      <div className={styles.heroContent}>
+        <motion.div variants={heroVariant} initial="hidden" animate="visible">
+          <span className={styles.badge} aria-label="Tagline">
+            <Sparkles size={14} aria-hidden="true" />
+            The Future of Talent Placement
+          </span>
+
+          <h1 id="hero-heading" className={styles.heroTitle}>
+            Bridging the Gap Between{' '}
+            <br className={styles.titleBreak} />
+            <span className={styles.gradientText}>Ambition and Opportunity</span>
+          </h1>
+
+          <p className={styles.heroDesc}>
+            Careerly is the intelligent ecosystem connecting students, educational institutions, and
+            global companies through AI-driven career matching.
+          </p>
+
+          <div className={styles.ctaGroup}>
+            <motion.div variants={press} whileHover="hover" whileTap="tap">
+              <Link to="/register" className={styles.btnPrimary}>
+                Get Started Now <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+            </motion.div>
+            <a href="#how" className={styles.btnSecondary}>
+              See How It Works
+            </a>
+          </div>
+        </motion.div>
+
+        {/* Stats Row */}
+        <motion.div
+          className={styles.statsRow}
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
+        >
+          {[
+            { value: '12k+', label: 'Placements' },
+            { value: '400+', label: 'Partner Companies' },
+            { value: '98%', label: 'Satisfaction Rate' },
+          ].map((stat) => (
+            <motion.div key={stat.label} variants={fadeUp} className={styles.statItem}>
+              <span className={styles.statValue}>{stat.value}</span>
+              <span className={styles.statLabel}>{stat.label}</span>
             </motion.div>
           ))}
-        </div>
-      </section>
-
-      {/* CTA BOTTOM SECTION */}
-      <section style={{ padding: '80px 24px', background: 'var(--blue-600)', color: 'white', textAlign: 'center' }}>
-        <motion.div initial={{ scale: 0.9 }} whileInView={{ scale: 1 }}>
-          <h2 style={{ fontSize: '32px', fontWeight: '900', marginBottom: '20px' }}>Ready to redefine your future?</h2>
-          <p style={{ opacity: 0.9, marginBottom: '32px', fontSize: '18px' }}>Create your free account today and start matching.</p>
-          <button className="nav-btn" style={{ background: 'white', color: 'var(--blue-600)', padding: '16px 40px', fontSize: '18px' }}>
-            Get Started Now
-          </button>
         </motion.div>
-      </section>
 
-      {/* FOOTER */}
-      <footer className="footer">
-        <div className="footer-logo-wrap">
-          <div className="logo-box logo-box-small">C</div>
-          <span className="logo-text" style={{ fontSize: '18px' }}>Careerly</span>
-        </div>
-        <p className="footer-copyright">
-          © 2026 CAREERLY Talent Ecosystem. Elevating potential through intelligence.
+        {/* App Preview */}
+        <motion.div
+          className={styles.previewWrapper}
+          variants={scaleIn}
+          initial="hidden"
+          animate="visible"
+        >
+          <div className={styles.previewBox}>
+            {/* Fake browser chrome */}
+            <div className={styles.browserBar} aria-hidden="true">
+              <span className={`${styles.dot} ${styles.dotRed}`} />
+              <span className={`${styles.dot} ${styles.dotYellow}`} />
+              <span className={`${styles.dot} ${styles.dotGreen}`} />
+              <span className={styles.urlBar}>app.careerly.io/dashboard</span>
+            </div>
+            {/* Mock dashboard content */}
+            <div className={styles.previewInner}>
+              <div className={styles.mockSidebar} aria-hidden="true">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className={`${styles.mockNavItem} ${i === 0 ? styles.mockNavActive : ''}`} />
+                ))}
+              </div>
+              <div className={styles.mockMain}>
+                <div className={styles.mockHeader} />
+                <div className={styles.mockCards}>
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className={styles.mockCard} />
+                  ))}
+                </div>
+                <div className={styles.mockChart} />
+              </div>
+            </div>
+          </div>
+
+          <motion.div
+            className={styles.trustBadge}
+            variants={badgeSlide}
+            initial="hidden"
+            animate="visible"
+          >
+            <ShieldCheck size={20} className={styles.trustIcon} aria-hidden="true" />
+            <div>
+              <p className={styles.trustLabel}>Verified Placements</p>
+              <p className={styles.trustValue}>12,400+ careers launched</p>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function HowItWorksSection() {
+  return (
+    <section id="how" className={styles.howItWorks} aria-labelledby="how-heading">
+      <div className={styles.sectionHeader}>
+        <h2 id="how-heading" className={styles.sectionTitle}>The Three-Step Synergy</h2>
+        <p className={styles.sectionSubtitle}>
+          A streamlined pipeline designed to get you from start to hired in record time.
         </p>
-        <div className="footer-links">
-          <button className="footer-link-btn">Privacy Policy</button>
-          <button className="footer-link-btn">Terms of Service</button>
-          <button className="footer-link-btn">Cookie Policy</button>
-          <button className="footer-link-btn">Support Center</button>
+      </div>
+
+      <motion.div
+        className={styles.stepsGrid}
+        variants={stagger}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-80px' }}
+      >
+        {STEPS.map((step, i) => (
+          <motion.div key={step.id} variants={fadeUp} className={styles.stepItem}>
+            <div className={styles.stepNumber} aria-hidden="true">{String(i + 1).padStart(2, '0')}</div>
+            <div className={styles.stepIconWrap} aria-hidden="true">
+              <step.Icon size={28} />
+            </div>
+            <h3 className={styles.stepTitle}>{step.title}</h3>
+            <p className={styles.stepDesc}>{step.desc}</p>
+          </motion.div>
+        ))}
+      </motion.div>
+    </section>
+  );
+}
+
+function SolutionsSection() {
+  return (
+    <section id="solutions" className={styles.solutions} aria-labelledby="solutions-heading">
+      <div className={styles.sectionHeader}>
+        <h2 id="solutions-heading" className={styles.sectionTitle}>Choose Your Path</h2>
+        <p className={styles.sectionSubtitle}>
+          Careerly's specialized ecosystem adapts to every role in the talent journey.
+        </p>
+      </div>
+
+      <motion.div
+        className={styles.solutionsGrid}
+        variants={stagger}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-80px' }}
+      >
+        {USER_TYPES.map((type) => (
+          <motion.article
+            key={type.id}
+            variants={fadeUp}
+            whileHover={{ y: -10, transition: { duration: 0.25 } }}
+            className={`${styles.card} ${type.colorMod}`}
+          >
+            <div className={styles.cardAccent} aria-hidden="true" />
+            <div className={styles.iconBox} aria-hidden="true">
+              <type.icon size={36} />
+            </div>
+            <h3 className={styles.cardTitle}>{type.title}</h3>
+            <p className={styles.cardDesc}>{type.description}</p>
+            <ul className={styles.featureList} aria-label={`${type.title} features`}>
+              {type.features.map((feature) => (
+                <li key={feature} className={styles.featureItem}>
+                  <CheckCircle2 size={16} className={styles.featureCheck} aria-hidden="true" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              to={`/register?role=${type.roleParam}`}
+              className={styles.cardBtn}
+              aria-label={`${type.buttonText} — ${type.title}`}
+            >
+              {type.buttonText}
+            </Link>
+          </motion.article>
+        ))}
+      </motion.div>
+    </section>
+  );
+}
+
+function TestimonialsSection() {
+  return (
+    <section id="testimonials" className={styles.testimonials} aria-labelledby="testimonials-heading">
+      <div className={styles.sectionHeader}>
+        <h2 id="testimonials-heading" className={styles.sectionTitle}>Voices of Success</h2>
+        <p className={styles.sectionSubtitle}>
+          Join thousands of students and recruiters already thriving on Careerly.
+        </p>
+      </div>
+
+      <div className={styles.testimonialGrid}>
+        {TESTIMONIALS.map((t, i) => (
+          <motion.figure
+            key={t.id}
+            initial={{ opacity: 0, x: i % 2 === 0 ? -24 : 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className={styles.testimonialCard}
+          >
+            <Quote className={styles.quoteIcon} size={36} aria-hidden="true" />
+            <blockquote>
+              <p className={styles.testimonialText}>{t.text}</p>
+            </blockquote>
+            <figcaption className={styles.testimonialAuthor}>
+              <div className={styles.avatar} aria-hidden="true">
+                {t.initials}
+              </div>
+              <div>
+                <p className={styles.authorName}>{t.name}</p>
+                <p className={styles.authorRole}>{t.role}</p>
+              </div>
+            </figcaption>
+          </motion.figure>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CtaSection() {
+  return (
+    <section className={styles.ctaSection} aria-labelledby="cta-heading">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className={styles.ctaInner}
+      >
+        <span className={styles.ctaBadge} aria-hidden="true">✦ No credit card required</span>
+        <h2 id="cta-heading" className={styles.ctaTitle}>
+          Ready to redefine your future?
+        </h2>
+        <p className={styles.ctaDesc}>
+          Create your free account today and start matching with the best opportunities.
+        </p>
+        <motion.div variants={press} whileHover="hover" whileTap="tap">
+          <Link to="/register" className={styles.ctaBtn}>
+            Get Started — It's Free <ArrowRight size={18} aria-hidden="true" />
+          </Link>
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+}
+
+function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className={styles.footer}>
+      <div className={styles.footerInner}>
+        <div className={styles.footerBrand}>
+          <Link to="/" className={styles.brand} aria-label="Careerly home">
+            <div className={styles.brandIconSmall} aria-hidden="true">C</div>
+            <span className={styles.brandNameSmall}>Careerly</span>
+          </Link>
+          <p className={styles.footerTagline}>
+            Elevating potential through intelligence.
+          </p>
         </div>
-      </footer>
+
+        <nav className={styles.footerLinks} aria-label="Footer navigation">
+          <a href="/privacy-policy" className={styles.footerLink}>Privacy Policy</a>
+          <a href="/terms-of-service" className={styles.footerLink}>Terms of Service</a>
+          <a href="/cookie-policy" className={styles.footerLink}>Cookie Policy</a>
+        </nav>
+
+        <p className={styles.footerCopy}>
+          © {currentYear} Careerly Talent Ecosystem. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  );
+}
+
+// ─── Main Page Component ──────────────────────────────────────────────────────
+
+export default function LandingPage() {
+  return (
+    <div className={styles.pageWrapper}>
+      <NavBar />
+      <main>
+        <HeroSection />
+        <HowItWorksSection />
+        <SolutionsSection />
+        <TestimonialsSection />
+        <CtaSection />
+      </main>
+      <Footer />
     </div>
   );
-};
-
-export default LandingPage;
+}

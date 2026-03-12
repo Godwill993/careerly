@@ -6,6 +6,8 @@ import { internshipService } from '../services/internshipService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import styles from '../styles/CompanyDashboard.module.css';
 
+import ProfileHeader from '../components/ProfileHeader';
+
 const CompanyDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [internships, setInternships] = useState([]);
@@ -31,17 +33,21 @@ const CompanyDashboard = () => {
     setLoading(false);
   };
 
+  const headerStats = [
+    { label: 'Followers', value: '18.4K' },
+    { label: 'Openings', value: internships.length.toString() },
+    { label: 'Likes', value: '42K' }
+  ];
+
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div>
-          <h1>Company Hub</h1>
-          <p className="text-muted">Manage postings and discover top talent</p>
-        </div>
+      <ProfileHeader stats={headerStats} roleLabel="Top Employer" bannerGradient="linear-gradient(to right, #4facfe 0%, #00f2fe 100%)" />
+      
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '24px' }}>
         <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
           <FaPlus style={{ marginRight: '0.5rem' }} /> Post Internship
         </button>
-      </header>
+      </div>
 
       {/* Analytics Overview */}
       <div className={styles.statsGrid}>

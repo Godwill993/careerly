@@ -1,15 +1,18 @@
 import { FaSearch, FaBell, FaUserCircle, FaBars, FaSignOutAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import styles from '../styles/Navbar.module.css';
 
 const Navbar = ({ toggleSidebar }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       await authService.logout();
+      navigate('/login');
     } catch (error) {
       console.error("Logout failed", error);
     }
@@ -38,7 +41,11 @@ const Navbar = ({ toggleSidebar }) => {
             <span className={styles.userName}>{user?.displayName || user?.email?.split('@')[0] || 'User'}</span>
             <span className={styles.userRole}>{user?.role || 'Guest'}</span>
           </div>
-          <FaUserCircle className={styles.profileAvatar} />
+          {user?.photoURL ? (
+            <img src={user.photoURL} alt="Avatar" className={styles.profileAvatar} style={{ objectFit: 'cover' }} />
+          ) : (
+            <FaUserCircle className={styles.profileAvatar} />
+          )}
           <button onClick={handleLogout} className={styles.logoutBtn} title="Logout">
             <FaSignOutAlt />
           </button>

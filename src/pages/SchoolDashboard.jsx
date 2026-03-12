@@ -1,72 +1,102 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaApple, FaTrophy, FaBuilding, FaBook, FaPlus, FaSearch, FaTimes } from 'react-icons/fa';
+import { FaGraduationCap, FaNetworkWired, FaBrain, FaSearch, FaFireAlt } from 'react-icons/fa';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuth } from '../context/AuthContext';
-import { schoolService } from '../services/schoolService';
 import { db } from '../firebase/config';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import styles from '../styles/SchoolDashboard.module.css';
 import "../styles/index.css";
-import { useState, useEffect } from 'react'; // Added useState and useEffect imports
+import { useState, useEffect } from 'react';
+
+import ProfileHeader from '../components/ProfileHeader';
 
 const SchoolDashboard = () => {
-  const [activeTab, setActiveTab] = useState('students');
+  const [activeTab, setActiveTab] = useState('heatmap');
   const [loading, setLoading] = useState(true);
-  const [students, setStudents] = useState([]);
-  const [departments, setDepartments] = useState([]);
+  const [cohort, setCohort] = useState([]);
   const { user } = useAuth();
 
   useEffect(() => {
+    let unsubscribe;
     if (user?.uid) {
-      loadSchoolData();
+      unsubscribe = loadEcosystemData();
     }
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [user]);
 
-  const loadSchoolData = async () => {
+  const loadEcosystemData = () => {
     setLoading(true);
-    try {
-      // 1. Fetch Students specifically for this school
-      const studentsQ = query(collection(db, "users"), where("role", "==", "student"), where("schoolId", "==", user.uid));
-      const studentsSnap = await getDocs(studentsQ);
-      setStudents(studentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      
-      // 2. Fetch Departments for this school
-      const deps = await schoolService.getDepartments(user.uid);
-      setDepartments(deps);
-      
-    } catch (err) {
+    // Fetch Academic Cohort
+    const studentsQ = query(collection(db, "users"), where("role", "==", "student"), where("schoolId", "==", user.uid));
+    
+    const unsubscribe = onSnapshot(studentsQ, (snapshot) => {
+      const loadedCohort = snapshot.docs.map(doc => {
+        const data = doc.data();
+        // Synthesized Mock Variables for Heatmap Generation
+        const unverifiedLogs = Math.floor(Math.random() * 10);
+        const industrialEngagementDays = Math.floor(Math.random() * 30);
+        
+        // Heatmap Risk Algorithm
+        let riskLevel = 'Low Risk';
+        let heatmapColor = '#10b981'; // Green
+        if (unverifiedLogs > 4 || industrialEngagementDays > 14) {
+          riskLevel = 'Medium Risk';
+          heatmapColor = '#f59e0b'; // Yellow
+        }
+        if (unverifiedLogs > 7 || industrialEngagementDays > 21) {
+          riskLevel = 'High Risk';
+          heatmapColor = '#ef4444'; // Red
+        }
+
+        return { 
+          id: doc.id, 
+          ...data, 
+          unverifiedLogs,
+          industrialEngagementDays,
+          riskLevel,
+          heatmapColor
+        };
+      });
+      setCohort(loadedCohort);
+      setLoading(false);
+    }, (err) => {
       console.error(err);
-    }
-    setLoading(false);
+      setLoading(false);
+    });
+    
+    return unsubscribe;
   };
 
+  const getHighRiskCount = () => cohort.filter(s => s.riskLevel === 'High Risk').length;
+
   const stats = [
-    { label: 'Total Students', value: students.length.toString(), icon: <FaApple />, color: 'var(--color-primary)' },
-    { label: 'Active Courses', value: '42', icon: <FaBook />, color: 'var(--color-secondary)' },
-    { label: 'Partner Companies', value: '18', icon: <FaBuilding />, color: '#10b981' },
+    { label: 'Total Cohort Size', value: cohort.length.toString(), icon: <FaGraduationCap />, color: '#3b82f6' },
+    { label: 'Active Industry Links', value: '42', icon: <FaNetworkWired />, color: '#8b5cf6' },
+    { label: 'At-Risk Pipelines', value: getHighRiskCount().toString(), icon: <FaFireAlt />, color: '#ef4444' },
+  ];
+
+  const headerStats = [
+    { label: 'Followers', value: '2.9K' },
+    { label: 'Trainees', value: cohort.length.toString() },
+    { label: 'Rating', value: '4.9' }
   ];
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div>
-          <h1>School Administration</h1>
-          <p className="text-muted">Manage your academic ecosystem</p>
-        </div>
-        <button className="btn btn-primary">
-          <FaPlus style={{ marginRight: '0.5rem' }} /> Create New Course
-        </button>
-      </header>
+      <ProfileHeader stats={headerStats} roleLabel="Verified Institution" bannerGradient="linear-gradient(120deg, #f6d365 0%, #fda085 100%)" />
 
-      {/* Quick Stats */}
+      {/* System Telemetry */}
       <div className={styles.statsGrid}>
         {stats.map((stat, i) => (
           <motion.div 
             key={i} 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: i * 0.1 }}
             className={styles.statCard}
+            style={{ borderTop: `4px solid ${stat.color}` }}
           >
             <div className={styles.statIcon} style={{ backgroundColor: `${stat.color}15`, color: stat.color }}>
               {stat.icon}
@@ -79,211 +109,108 @@ const SchoolDashboard = () => {
         ))}
       </div>
 
-      {/* Main Admin Section */}
-      <div className={styles.adminCard}>
-        <nav className={styles.tabs}>
-          <button className={activeTab === 'students' ? styles.activeTab : ''} onClick={() => setActiveTab('students')}>Students</button>
-          <button className={activeTab === 'departments' ? styles.activeTab : ''} onClick={() => setActiveTab('departments')}>Departments</button>
-        </nav>
+      <div style={{ marginTop: '2rem' }}>
+        <div className={styles.adminCard}>
+          <nav className={styles.tabs}>
+            <button className={activeTab === 'heatmap' ? styles.activeTab : ''} onClick={() => setActiveTab('heatmap')}>
+              Cohort Progress Heatmap
+            </button>
+            <button className={activeTab === 'skills' ? styles.activeTab : ''} onClick={() => setActiveTab('skills')}>
+              AI Skills Gaps (Macro)
+            </button>
+          </nav>
 
-        <div className={styles.content}>
-          <AnimatePresence mode="wait">
-            {loading ? (
-              <motion.div key="loader" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <LoadingSpinner message="Fetching campus records..." fullHeight />
-              </motion.div>
-            ) : (
-              <motion.div 
-                key={activeTab}
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-              >
-                {activeTab === 'students' && <StudentTable students={students} schoolId={user.uid} onRefresh={loadSchoolData} />}
-                {activeTab === 'departments' && <DepartmentList departments={departments} schoolId={user.uid} onRefresh={loadSchoolData} />}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className={styles.content}>
+            <AnimatePresence mode="wait">
+              {loading ? (
+                <motion.div key="loader" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <LoadingSpinner message="Synthesizing Ecosystem Telemetry..." fullHeight />
+                </motion.div>
+              ) : (
+                <motion.div 
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                >
+                  {activeTab === 'heatmap' && <HeatmapTable cohort={cohort} />}
+                  {activeTab === 'skills' && (
+                    <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                      <FaBrain size={48} style={{ color: '#8b5cf6', marginBottom: '1rem' }} />
+                      <h3>Macro AI Competency Mapping</h3>
+                      <p>Institution-wide curriculum gap analysis is compiling daily logs...</p>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-// Sub-components for cleaner logic
-const StudentTable = ({ students, schoolId, onRefresh }) => {
-  const [selectedStudent, setSelectedStudent] = useState(null);
-
+const HeatmapTable = ({ cohort }) => {
   return (
     <div className={styles.tableWrapper}>
       <div className={styles.tableActions}>
-        <div className={styles.searchBox}>
-          <FaSearch />
-          <input type="text" placeholder="Filter students..." />
-        </div>
+         <div className={styles.searchBox}>
+            <FaSearch color="var(--color-text-muted)" />
+            <input type="text" placeholder="Filter pipeline by student or industry partner..." />
+         </div>
+         <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
+            Sorted by Risk Severity
+         </span>
       </div>
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Student Name</th>
-            <th>Email</th>
-            <th>Department</th>
-            <th>Courses Assigned</th>
+            <th>Student / Entity</th>
+            <th>Program</th>
+            <th>Unverified Milestones</th>
+            <th>Days Since Last Engagement</th>
+            <th>Ecosystem Status</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {students.length > 0 ? students.map((s, i) => (
+          {cohort.sort((a,b) => b.unverifiedLogs - a.unverifiedLogs).map((s, i) => (
             <tr key={s.id || i}>
-              <td><strong>{s.displayName || s.firstName || 'Student'}</strong></td>
-              <td>{s.email}</td>
-              <td>{s.department || 'Unassigned'}</td>
-              <td>{s.courses ? s.courses.length : 0}</td>
+              <td>
+                <strong>{s.displayName || s.email || 'Anonymous Student'}</strong>
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>ID: {s.id.slice(0,8)}...</div>
+              </td>
+              <td>{s.department || 'B.S. Computer Science'}</td>
+              <td>
+                <span style={{ fontWeight: 800, color: s.heatmapColor }}>{s.unverifiedLogs}</span>
+              </td>
+              <td>{s.industrialEngagementDays} days</td>
+              <td>
+                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: s.heatmapColor }}></div>
+                    <span style={{ fontWeight: 600, color: s.heatmapColor, fontSize: '0.85rem' }}>{s.riskLevel}</span>
+                 </div>
+              </td>
               <td>
                 <button 
                   className="btn btn-secondary" 
-                  style={{ padding: '5px 10px', fontSize: '0.8rem' }}
-                  onClick={() => setSelectedStudent(s)}
+                  style={{ padding: '6px 12px', fontSize: '0.8rem', borderRadius: '8px' }}
                 >
-                  Manage Courses
+                  Force Handshake
                 </button>
               </td>
             </tr>
-          )) : (
+          ))}
+          {cohort.length === 0 && (
             <tr>
-              <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>No students found.</td>
+              <td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>No cohort data detected.</td>
             </tr>
           )}
         </tbody>
       </table>
-
-      {/* Course Assignment Modal */}
-      <AnimatePresence>
-        {selectedStudent && (
-          <CourseModal 
-            student={selectedStudent} 
-            onClose={() => setSelectedStudent(null)} 
-            onRefresh={onRefresh}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
-};
-
-const CourseModal = ({ student, onClose, onRefresh }) => {
-  const [newCourse, setNewCourse] = useState('');
-  const [assigning, setAssigning] = useState(false);
-
-  const handleAssign = async (e) => {
-    e.preventDefault();
-    if (!newCourse.trim()) return;
-    setAssigning(true);
-    try {
-      await schoolService.assignCourse(student.id, newCourse.trim());
-      setNewCourse('');
-      onRefresh();
-      // Since context/props might not update immediately for modal, you might close or let them stay
-    } catch (err) {
-      console.error(err);
-    }
-    setAssigning(false);
-  };
-
-  return (
-    <motion.div 
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className={styles.modalOverlay}
-      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}
-    >
-      <motion.div 
-        initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-        style={{ background: 'var(--color-surface)', padding: '2rem', borderRadius: '12px', width: '90%', maxWidth: '500px' }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h3 style={{ margin: 0 }}>Manage {student.displayName || 'Student'}'s Courses</h3>
-          <FaTimes onClick={onClose} style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'var(--color-text-muted)' }} />
-        </div>
-        
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h4 style={{ marginBottom: '0.5rem', fontSize: '1rem' }}>Current Courses</h4>
-          {student.courses && student.courses.length > 0 ? (
-            <ul style={{ paddingLeft: '1.2rem', color: 'var(--color-text)' }}>
-              {student.courses.map((c, i) => (
-                <li key={i}>{c}</li>
-              ))}
-            </ul>
-          ) : (
-            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>No courses assigned yet.</p>
-          )}
-        </div>
-
-        <form onSubmit={handleAssign} style={{ display: 'flex', gap: '10px' }}>
-          <input 
-            type="text" 
-            placeholder="Course Name (e.g. CS101)" 
-            value={newCourse} 
-            onChange={(e) => setNewCourse(e.target.value)}
-            style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid var(--color-border)' }}
-            disabled={assigning}
-          />
-          <button type="submit" className="btn btn-primary" disabled={assigning}>
-            {assigning ? 'Adding...' : 'Assign'}
-          </button>
-        </form>
-      </motion.div>
-    </motion.div>
-  );
-};
-
-
-const DepartmentList = ({ departments, schoolId, onRefresh }) => {
-  const [newDep, setNewDep] = useState('');
-  const [adding, setAdding] = useState(false);
-
-  const handleAdd = async (e) => {
-    e.preventDefault();
-    if (!newDep.trim()) return;
-    setAdding(true);
-    try {
-      await schoolService.addDepartment(schoolId, newDep);
-      setNewDep('');
-      onRefresh();
-    } catch (err) {
-      console.error(err);
-    }
-    setAdding(false);
-  };
-
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h3>Active Departments</h3>
-        <form onSubmit={handleAdd} style={{ display: 'flex', gap: '10px' }}>
-          <input 
-            type="text" 
-            placeholder="New Department Name" 
-            value={newDep} 
-            onChange={(e) => setNewDep(e.target.value)}
-            style={{ padding: '8px', borderRadius: '5px', border: '1px solid var(--color-border)' }}
-            disabled={adding}
-          />
-          <button type="submit" className="btn btn-primary" disabled={adding}>
-            {adding ? 'Adding...' : 'Add'}
-          </button>
-        </form>
-      </div>
-
-      <div className={styles.grid} style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
-        {departments.map(dep => (
-          <div key={dep.id} style={{ padding: '1.5rem', background: 'var(--color-surface)', borderRadius: '12px', border: '1px solid var(--color-border)' }}>
-            <h4>{dep.name}</h4>
-          </div>
-        ))}
-        {departments.length === 0 && <p style={{ gridColumn: '1 / -1' }}>No departments defined yet.</p>}
-      </div>
-    </div>
-  )
 };
 
 export default SchoolDashboard;

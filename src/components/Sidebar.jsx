@@ -10,7 +10,7 @@ import styles from '../styles/Sidebar.module.css';
 const Sidebar = ({ isOpen, toggleSidebar, onCloseMobile }) => {
   const { user } = useAuth();
 
-  const menuItems = getMenuItems(user?.role);
+  const menuItems = getMenuItems(user?.role, user?.uid);
 
   return (
     <motion.aside 

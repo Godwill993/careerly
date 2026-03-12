@@ -1,15 +1,105 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // User profile rules
-    match /users/{userId} {
-      // Allow user to read and write their own profile
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+    // Role helpers — reads from the user's own Firestore profile
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
     }
-    
-    // Default rule for other collections (can be refined as project grows)
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isStudent() {
+      return isSignedIn() && getUserRole() == 'student';
+    }
+    function isCompany() {
+      return isSignedIn() && getUserRole() == 'company';
+    }
+    function isSchool() {
+      return isSignedIn() && getUserRole() == 'school';
+    }
+
+    // 1. Users Collection
+    match /users/{userId} {
+      // Anyone signed in can read their own profile
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      // Schools can read profiles of students that belong to them
+      allow read: if isSchool() && resource.data.schoolId == request.auth.uid;
+      // Companies/schools can read any student profile for talent search / rankings
+      allow read: if isSignedIn() && (isCompany() || isSchool());
+      // Only the owner can write their own profile
+      allow write: if isSignedIn() && request.auth.uid == userId;
+      // Allow profile creation during registration (user doc may not exist yet)
+      allow create: if isSignedIn() && request.auth.uid == userId;
+
+      // Bookmarks sub-collection
+      match /bookmarks/{bookmarkId} {
+        allow read, write: if isSignedIn() && request.auth.uid == userId;
+      }
+    }
+
+    // 2. Logs Collection (Audit Trail)
+    match /logs/{logId} {
+      // Students read their own logs; companies read assigned logs; schools read cohort logs
+      allow read: if isSignedIn() && (
+        request.auth.uid == resource.data.studentId ||
+        request.auth.uid == resource.data.mentorId ||
+        isSchool()
+      );
+      // Students can create logs for themselves only
+      allow create: if isStudent() &&
+        request.resource.data.studentId == request.auth.uid;
+      // Companies (mentors) can update status only
+      allow update: if isCompany() &&
+        request.auth.uid == resource.data.mentorId &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'validatedAt']);
+      // Immutable audit trail
+      allow delete: if false;
+    }
+
+    // 3. Internships Collection
+    match /internships/{internshipId} {
+      // Anyone signed in can browse internships
+      allow read: if isSignedIn();
+      // Only companies can create/update/delete their own
+      allow create: if isCompany();
+      allow update, delete: if isCompany() && resource.data.companyId == request.auth.uid;
+    }
+
+    // 4. Applications Collection
+    match /applications/{applicationId} {
+      // Students read their own; companies read for their internships
+      allow read: if isSignedIn() && (
+        request.auth.uid == resource.data.studentId ||
+        isCompany()
+      );
+      // Students can apply
+      allow create: if isStudent();
+      // Companies can update status (accept/reject)
+      allow update: if isCompany();
+      allow delete: if false;
+    }
+
+    // 5. Departments Collection (for school registration dropdowns)
+    match /departments/{deptId} {
+      // Public read so students can see them during registration
+      allow read: if true;
+      allow write: if isSchool();
+    }
+
+    // 6. Organizations Collection (Academic and Industry)
+    match /organizations/{orgId} {
+      // Public read for selection during registration
+      allow read: if true;
+      // Only organizations or system can write (here we allow creation via specific logic if needed, 
+      // but the app creates them during registration)
+      allow create: if true; 
+      allow update, delete: if isSignedIn() && (isSchool() || isCompany()) && request.auth.uid == orgId;
+    }
+
+    // 7. Fallback: deny everything else
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if false;
     }
   }
 }

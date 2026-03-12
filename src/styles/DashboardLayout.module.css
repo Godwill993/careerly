@@ -1,6 +1,6 @@
 .layoutContainer {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   background-color: var(--color-bg); /* Uses theme variable */
   overflow: hidden;
 }
@@ -9,13 +9,15 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   transition: all var(--transition-standard);
 }
 
 .contentArea {
   flex: 1;
   padding: 2rem;
+  overflow-y: auto;
   /* Smooth scroll behavior inherited from global index.css */
 }
 

@@ -15,22 +15,80 @@ import {
 /* Note: removed getDoc from the list above as it was unused */
 
 export const internshipService = {
-  // --- CRUD Operations ---
-  createInternship: (data) => {
+  // --- Core Internship Management (Careerly Data Model) ---
+
+  /**
+   * Create an active Internship engagement mapping Student, Mentor, and Supervisor.
+   */
+  startInternship: (data) => {
     return addDoc(collection(db, "internships"), {
-      ...data,
-      createdAt: serverTimestamp(),
-      status: 'active'
+      studentId: data.studentId,
+      mentorId: data.mentorId,
+      supervisorId: data.supervisorId,
+      orgId: data.orgId,
+      startDate: data.startDate || serverTimestamp(),
+      endDate: data.endDate || null,
+      title: data.title,
+      description: data.description,
+      status: 'active', // active, completed, terminated
+      createdAt: serverTimestamp()
     });
   },
 
+  getInternshipById: async (id) => {
+    const docRef = doc(db, "internships", id);
+    const snap = await getDoc(docRef);
+    return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+  },
+
+  getStudentInternships: async (studentId) => {
+    const q = query(collection(db, "internships"), where("studentId", "==", studentId));
+    const snap = await getDocs(q);
+    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  },
+
+  // --- Log / Milestone System (Linked to Internships) ---
+
+  /**
+   * Submit a daily or milestone log for an internship.
+   */
+  submitLog: (logData) => {
+    return addDoc(collection(db, "logs"), {
+      internshipId: logData.internshipId,
+      studentId: logData.studentId, // Denormalized for query performance
+      date: logData.date || serverTimestamp(),
+      description: logData.description,
+      skillsMatched: logData.skillsMatched || [],
+      status: 'pending', // pending, approved
+      submittedAt: serverTimestamp()
+    });
+  },
+
+  /**
+   * Approve a log (Supervisor/Mentor Action)
+   */
+  approveLog: (logId, approverId) => {
+    return updateDoc(doc(db, "logs", logId), {
+      status: 'approved',
+      approvedBy: approverId,
+      approvedAt: serverTimestamp()
+    });
+  },
+
+  getInternshipLogs: async (internshipId) => {
+    const q = query(collection(db, "logs"), where("internshipId", "==", internshipId));
+    const snap = await getDocs(q);
+    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  },
+
+  // --- Legacy / UI Support ---
   getAllInternships: async () => {
     const querySnapshot = await getDocs(collection(db, "internships"));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   },
 
-  getCompanyInternships: async (companyId) => {
-    const q = query(collection(db, "internships"), where("companyId", "==", companyId));
+  getCompanyInternships: async (orgId) => {
+    const q = query(collection(db, "internships"), where("orgId", "==", orgId));
     const snap = await getDocs(q);
     return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   },
@@ -39,13 +97,14 @@ export const internshipService = {
 
   deleteInternship: (id) => deleteDoc(doc(db, "internships", id)),
 
-  // --- Application System ---
-  applyToInternship: (studentId, internshipId, studentData) => {
+  // --- Hub Application System ---
+  applyToInternship: (studentId, internshipId, data) => {
     return addDoc(collection(db, "applications"), {
       studentId,
       internshipId,
-      ...studentData,
-      status: "pending", // pending, reviewed, accepted, rejected
+      orgId: data.orgId || data.companyId, // Handle both for safety
+      title: data.title || data.internshipTitle,
+      status: "pending",
       appliedAt: serverTimestamp(),
     });
   },
@@ -56,15 +115,12 @@ export const internshipService = {
     return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   },
 
-  // --- Bookmark System ---
+  // Bookmark System
   toggleBookmark: async (userId, internshipId, isBookmarked) => {
-    // Logic: If already bookmarked, delete the doc. If not, create it.
     const bookmarkRef = doc(db, "users", userId, "bookmarks", internshipId);
-
     if (isBookmarked) {
       await deleteDoc(bookmarkRef);
     } else {
-      // setDoc is used here to create a document with a specific ID (internshipId)
       await setDoc(bookmarkRef, { bookmarkedAt: serverTimestamp() });
     }
   }

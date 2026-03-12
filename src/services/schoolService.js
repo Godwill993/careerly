@@ -1,15 +1,15 @@
 import { db } from "../firebase/config";
-import { collection, doc, getDocs, getDoc, setDoc, updateDoc, addDoc, query, where, arrayUnion } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc, addDoc, query, where, arrayUnion } from "firebase/firestore";
 
 export const schoolService = {
-    // Fetch all schools for registration drop-down
+    // Fetch all academic organizations for registration
     getAllSchools: async () => {
         try {
-            const q = query(collection(db, "users"), where("role", "==", "school"));
+            const q = query(collection(db, "organizations"), where("type", "==", "academic"));
             const snap = await getDocs(q);
             return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         } catch (error) {
-            console.error("Error fetching schools:", error);
+            console.error("Error fetching academic orgs:", error);
             return [];
         }
     },

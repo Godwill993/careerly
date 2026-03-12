@@ -9,7 +9,7 @@
   transition: width var(--transition-standard), transform var(--transition-standard);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  z-index: 100; /* Increased z-index for mobile overlay */
+  z-index: 100; 
 }
 
 @media (max-width: 768px) {
@@ -63,6 +63,21 @@
   flex-direction: column;
   gap: 0.5rem;
   overflow-y: auto;
+}
+
+/* Custom scrollbar for nav */
+.nav::-webkit-scrollbar {
+  width: 5px;
+}
+.nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.nav::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 5px;
+}
+.nav::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
 }
 
 .navItem {

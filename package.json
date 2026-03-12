@@ -29,14 +29,16 @@
     }
   },
   "dependencies": {
-    "@genkit-ai/googleai": "^1.27.0",
+    "@genkit-ai/firebase": "^1.29.0",
+    "@genkit-ai/googleai": "^1.28.0",
     "firebase": "^12.7.0",
     "framer-motion": "^12.25.0",
-    "genkit": "^1.27.0",
+    "genkit": "^1.29.0",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.12.0"
   },
   "devDependencies": {

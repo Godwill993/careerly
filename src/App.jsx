@@ -12,9 +12,12 @@ import AiAssistant from './pages/AiAssistant';
 import CompanyDashboard from './pages/CompanyDashboard';
 import LandingPage from './pages/LandingPage';
 import Internships from './pages/Internship';
-import Ranking from './pages/Ranking';
+import Rating from './pages/Rating';
 import Settings from './pages/Settings';
 import ManageInternships from './pages/ManageInternships';
+import Portfolio from './pages/Portfolio'; 
+import MentorDashboard from './components/MentorDashboard'; // Imported Mentor Dashboard
+import Messages from './pages/Messages';
 
 // Placeholder for missing pages
 const Placeholder = ({ name }) => (
@@ -47,6 +50,7 @@ function AppContent() {
       <Route path="/" element={<LandingPage name="Landing" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/portfolio/:studentId" element={<Portfolio />} /> {/* Public Verify Link */}
 
       {/* --- PROTECTED ROUTES (Requires Login) --- */}
       <Route element={<ProtectedRoute isAllowed={!!user} redirectTo="/login" />}>
@@ -56,8 +60,9 @@ function AppContent() {
           <Route path="/profile" element={<Placeholder name="Profile" />} />
           <Route path="/settings" element={<Settings name="Settings" />} />
           <Route path="/ai-assistant" element={<AiAssistant />} />
-          <Route path="/rankings" element={<Ranking name="Rankings" />} />
+          <Route path="/ratings" element={<Rating name="Ratings" />} />
           <Route path="/internships" element={<Internships name="Internships" />} />
+          <Route path="/messages" element={<Messages />} />
 
           {/* --- ROLE-BASED DASHBOARDS --- */}
           
@@ -109,6 +114,19 @@ function AppContent() {
                 <div className="loading-container"><div className="spinner"></div></div>
               ) : user.role === 'company' ? (
                 <ManageInternships />
+              ) : (
+                <Navigate to="/forbidden" />
+              )
+            } 
+          />
+          {/* Mentor Validity Dashboard */}
+          <Route 
+            path="/company/validations" 
+            element={
+              !user?.role ? (
+                <div className="loading-container"><div className="spinner"></div></div>
+              ) : user.role === 'company' ? (
+                <MentorDashboard mentorId={user.uid} />
               ) : (
                 <Navigate to="/forbidden" />
               )

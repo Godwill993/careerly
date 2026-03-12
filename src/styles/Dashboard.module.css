@@ -53,8 +53,14 @@
 
 .mainGrid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr;
   gap: 2rem;
+}
+
+@media (min-width: 1200px) {
+  .mainGridTwoCol {
+    grid-template-columns: 2fr 1fr;
+  }
 }
 
 .internshipGrid {
@@ -157,4 +163,126 @@
   .internshipGrid {
     grid-template-columns: 1fr;
   }
+}
+
+/* New Production Styles */
+.tableWrapper {
+  overflow-x: auto;
+  margin-top: 1rem;
+  background: var(--color-surface);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 12px;
+  color: var(--color-text-muted);
+  border-bottom: 2px solid var(--color-border);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.95rem;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badgeAccepted {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.badgePending {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.courseCard {
+  padding: 2rem;
+  background: var(--color-primary-light);
+  border-radius: 16px;
+  border: 1px solid var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all var(--transition-standard);
+}
+
+.courseCard:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-md);
+  background: var(--color-surface);
+}
+
+.courseIcon {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  margin-bottom: 1.2rem;
+}
+
+.courseTitle {
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.emptyState {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--color-surface);
+  border-radius: 16px;
+  border: 1px dashed var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.contentSection {
+  margin-bottom: 3rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: 1.5rem;
+}
+
+.internCardBody {
+  padding: 1.5rem;
+}
+
+.btnFullWidth {
+  width: 100%;
 }

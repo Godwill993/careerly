@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { internshipService } from '../services/internshipService';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { db } from '../firebase/config';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import styles from '../styles/InternshipSystem.module.css';
 
 const ManageInternships = () => {
@@ -13,42 +13,54 @@ const ManageInternships = () => {
   const [applicants, setApplicants] = useState([]);
   const [loadingApplicants, setLoadingApplicants] = useState(false);
   const { user } = useAuth();
+  const applicantUnsubRef = useRef(null);
 
   useEffect(() => {
+    let unsubscribe;
     if (user?.uid) {
-      loadMyInternships();
+      unsubscribe = loadMyInternships();
     }
+    return () => {
+      if (unsubscribe) unsubscribe();
+      // Clean up applicant listener too
+      if (applicantUnsubRef.current) applicantUnsubRef.current();
+    };
   }, [user]);
 
-  const loadMyInternships = async () => {
+  const loadMyInternships = () => {
     setLoading(true);
-    try {
-      const data = await internshipService.getCompanyInternships(user.uid);
-      setInternships(data);
-    } catch (error) {
+    const q = query(collection(db, "internships"), where("companyId", "==", user.uid));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setInternships(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setLoading(false);
+    }, (error) => {
       console.error("Error loading internships:", error);
-    }
-    setLoading(false);
+      setLoading(false);
+    });
+    return unsubscribe;
   };
 
   const handleStatusChange = async (id, newStatus) => {
     await internshipService.updateInternship(id, { status: newStatus });
-    loadMyInternships();
   };
 
-  const handleViewApplicants = async (internshipId) => {
+  const handleViewApplicants = (internshipId) => {
+    // Clean up previous applicant listener before setting a new one
+    if (applicantUnsubRef.current) applicantUnsubRef.current();
     setViewingApplicantsFor(internshipId);
     setLoadingApplicants(true);
-    try {
-      // Create a function in internshipService or query here.
-      // Easiest is to query 'applications' where internshipId == ...
-      const q = query(collection(db, "applications"), where("internshipId", "==", internshipId));
-      const snap = await getDocs(q);
-      setApplicants(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    } catch (err) {
-      console.error(err);
-    }
-    setLoadingApplicants(false);
+    const q = query(collection(db, "applications"), where("internshipId", "==", internshipId));
+    applicantUnsubRef.current = onSnapshot(q, (snapshot) => {
+       setApplicants(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+       setLoadingApplicants(false);
+    });
+  };
+
+  const handleBackToPostings = () => {
+    if (applicantUnsubRef.current) applicantUnsubRef.current();
+    applicantUnsubRef.current = null;
+    setViewingApplicantsFor(null);
+    setApplicants([]);
   };
 
   if (viewingApplicantsFor) {
@@ -56,7 +68,7 @@ const ManageInternships = () => {
       <div className={styles.container}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
           <h2>Applicants</h2>
-          <button className="btn btn-secondary" onClick={() => setViewingApplicantsFor(null)}>Back to Postings</button>
+          <button className="btn btn-secondary" onClick={handleBackToPostings}>Back to Postings</button>
         </div>
         {loadingApplicants ? (
           <LoadingSpinner message="Fetching applicants..." />
@@ -107,7 +119,7 @@ const ManageInternships = () => {
                 <option value="draft">Draft</option>
               </select>
               <button className="btn btn-primary" style={{ marginRight: '10px' }} onClick={() => handleViewApplicants(item.id)}>View Applicants</button>
-              <button className="btn btn-secondary" onClick={() => internshipService.deleteInternship(item.id).then(loadMyInternships)}>Delete</button>
+              <button className="btn btn-secondary" onClick={() => internshipService.deleteInternship(item.id)}>Delete</button>
             </div>
           </div>
         ))}
